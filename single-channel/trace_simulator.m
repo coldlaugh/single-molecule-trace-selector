@@ -7,7 +7,7 @@
 % close all
 
 % *******************Parameters to set*************************
-function [traces,nbd,tauon,tauoff] = SiMREPS_trace_simulator(tau_on,tau_off,noise_level)
+function [traces,nbd,tauon,tauoff] = trace_simulator(tau_on,tau_off,noise_level)
 %noise_level = 0.15; % Noise level (currently a constant multiple of totcounts, and independent of channel)
 totcounts = 1000; % Total intensity counts for fluorophore in bound state
 frames = 1200; % Number of frames

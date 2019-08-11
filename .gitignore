@@ -63,3 +63,10 @@ target/
 
 #System files
 .DS_Store
+
+#Matlab Coder Compiled Executables
+*.mexmaci64
+codegen/
+
+#Matlab temp files
+*.m~

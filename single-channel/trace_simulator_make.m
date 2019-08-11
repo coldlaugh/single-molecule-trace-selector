@@ -18,5 +18,5 @@ ARGS{1}{2} = coder.typeof(0);
 ARGS{1}{3} = coder.typeof(0);
 
 %% Invoke MATLAB Coder.
-codegen -config cfg SiMREPS_trace_simulator -args ARGS{1} -nargout 4
+codegen -config cfg trace_simulator -args ARGS{1} -nargout 4
 
