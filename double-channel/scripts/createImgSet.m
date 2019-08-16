@@ -6,7 +6,7 @@ files = dir(fullfile(folder,pattern));
 outputDir = '../data/images/';
 
 %% Create images and organize them into folders
-parfor i = 1 : len(files)
+parfor i = 1 : length(files)
     file = files(i);
     dump = load(fullfile(file.folder,file.name),'-mat','traces');
     trace = dump.traces;
