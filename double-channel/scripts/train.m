@@ -11,7 +11,6 @@ end
 
 dataFolder = '../data/images/';
 dataSubFolders = {'accepted','rejected'};
-userMsg = waitbar(0,'Reading image data','Name','Reading image data');
 checkpointFolder = '../net/cnn/checkpoint/';
 checkpointFreq = 10;
 
@@ -32,13 +31,13 @@ netOutput = 'cnn-alexnet.mat';
 %% Setup data store
 
 ds = fileDatastore(fullfile(dataFolder,dataSubFolders),'IncludeSubfolders',true, 'FileExtensions', '.jpg',...
-    'ReadFcn',@(loc)imresize(imread(loc) / 255.0,'Outputsize',inputSize(1:2)));
+    'ReadFcn',@(loc)(255.0 - imresize(imread(loc),inputSize(1:2), 'bilinear')) / 255.0);
 
 %% Devide test and train set
 
 numTotal = length(ds.Files);
 numTrain = floor(dataUsageForTrain * numTotal);
-numTest = floor(numTotal - numTrain);
+numTest = numTotal - numTrain;
 
 indTrain = randperm(numTotal,numTrain);
 indTest = setdiff(1:numTotal,indTrain);
@@ -53,6 +52,9 @@ YTest = Y(indTest);
 
 iTrain = 1;
 iTest = 1;
+
+userMsg = waitbar(0,'Reading image data','Name','Reading image data');
+
 for i = 1 : numTotal
     if any(indTrain == i)
         XTrain(:,:,:,iTrain) = read(ds);
@@ -70,7 +72,7 @@ close(userMsg);
 endLayers = [
     fullyConnectedLayer(numClasses,'Name','fc')
     softmaxLayer('Name','softmax')
-    weightedClassificationLayer('classoutput',[1,5])
+    weightedClassificationLayer('classoutput',[1, 10])
     ];
 
 cnnLayers = [
@@ -85,7 +87,7 @@ options = trainingOptions(...
     'InitialLearnRate',learningRate,...
     'MaxEpochs',maxTrainEpochs,...
     'MiniBatchSize',batchSize,...
-    'Shuffle','once',...
+    'Shuffle','every-epoch',...
     'ExecutionEnvironment',computeEnv,...
     'Plots','training-progress',...
     'ValidationData',{XTest,YTest},...
@@ -101,5 +103,5 @@ cnnLayers = cnnNet.Layers;
 save(fullfile(netFolder, netOutput),'cnnNet','indTest','indTrain');
 
 %% classify using CNN
-[pred, score] =classify(cnnNet, XTest, 'ExecutionEnvironment', computeEnv);
-plotconfusion(YTest, pred);
+[pred, score] =classify(cnnNet, XTrain, 'ExecutionEnvironment', computeEnv);
+plotconfusion(YTrain, pred);
