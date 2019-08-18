@@ -18,7 +18,7 @@ checkpointFreq = 10;
 maxTrainEpochs = 200;
 batchSize = 500;
 algo = 'adam';
-learningRate = 0.001;
+learningRate = 0.01;
 dataUsageForTrain = 0.8;
 rejectedDropRate = 0.6;
 
@@ -32,9 +32,9 @@ netOutput = 'cnn-alexnet.mat';
 %% Setup data store
 
 ds = fileDatastore(fullfile(dataFolder,dataSubFolders),'IncludeSubfolders',true, 'FileExtensions', '.jpg',...
-    'ReadFcn',@(loc)imresize(imread(loc),'Outputsize',inputSize(1:2)));
+    'ReadFcn',@(loc)imresize(imread(loc) / 255.0,'Outputsize',inputSize(1:2)));
 
-%% Load train / test data from data store
+%% Devide test and train set
 
 numTotal = length(ds.Files);
 numTrain = floor(dataUsageForTrain * numTotal);
@@ -43,7 +43,7 @@ numTest = floor(numTotal - numTrain);
 indTrain = randperm(numTotal,numTrain);
 indTest = setdiff(1:numTotal,indTrain);
 indTest = indTest(randperm(length(indTest)));
-
+%% Load train / test data from data store
 XTrain = zeros([inputSize,length(indTrain)]);
 XTest = zeros([inputSize,length(indTest)]);
 
@@ -68,9 +68,9 @@ close(userMsg);
 %% Setup net
 
 endLayers = [
-    fullyConnectedLayer(numClasses,'Name','fc','WeightLearnRateFactor',100,'BiasLearnRateFactor',100)
+    fullyConnectedLayer(numClasses,'Name','fc')
     softmaxLayer('Name','softmax')
-    weightedClassificationLayer('classoutput',[5,1])
+    weightedClassificationLayer('classoutput',[1,5])
     ];
 
 cnnLayers = [
@@ -85,7 +85,7 @@ options = trainingOptions(...
     'InitialLearnRate',learningRate,...
     'MaxEpochs',maxTrainEpochs,...
     'MiniBatchSize',batchSize,...
-    'Shuffle','every-epoch',...
+    'Shuffle','once',...
     'ExecutionEnvironment',computeEnv,...
     'Plots','training-progress',...
     'ValidationData',{XTest,YTest},...
@@ -99,3 +99,7 @@ options = trainingOptions(...
 [cnnNet,info] = trainNetwork(XTrain,YTrain,cnnLayers,options);
 cnnLayers = cnnNet.Layers;
 save(fullfile(netFolder, netOutput),'cnnNet','indTest','indTrain');
+
+%% classify using CNN
+[pred, score] =classify(cnnNet, XTest, 'ExecutionEnvironment', computeEnv);
+plotconfusion(YTest, pred);

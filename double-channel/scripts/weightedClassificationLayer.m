@@ -64,9 +64,6 @@ classdef weightedClassificationLayer < nnet.layer.ClassificationLayer
             omega(1,1,:,:) = repmat([layer.Weight(1);layer.Weight(2)],[1,N]);
             e = T .* log(Y + 1e-8) .* omega;
             loss = - sum(e(:)) / N;
-            if isnan(loss)
-                'hehe'
-            end
         end
         %% Backward Loss function
         function dLdY = backwardLoss(layer, Y, T)
