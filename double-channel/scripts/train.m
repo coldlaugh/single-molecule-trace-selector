@@ -16,7 +16,7 @@ checkpointFolder = '../net/cnn/checkpoint/';
 checkpointFreq = 10;
 
 maxTrainEpochs = 200;
-batchSize = 500;
+batchSize = 100;
 algo = 'adam';
 learningRate = 0.01;
 dataUsageForTrain = 0.8;
