@@ -49,13 +49,13 @@ classdef upsampleLayer < nnet.layer.Layer
                 Z = zeros(targetPixel,targetPixel,3,n,classUnderlying(X),class(X));
                 for i = 1 : n
                     Z(:,:,:,i) = imresize(X(:,:,:,i), ...
-                        [targetPixel, targetPixel]);
+                        [targetPixel, targetPixel],'bicubic');
                 end
             else
                 Z = zeros(targetPixel,targetPixel,3,n,class(X));
                 for i = 1 : n
                     Z(:,:,:,i) = imresize(X(:,:,:,i), ...
-                        [targetPixel, targetPixel]);
+                        [targetPixel, targetPixel],'bicubic');
                 end
             end
             
@@ -80,8 +80,7 @@ classdef upsampleLayer < nnet.layer.Layer
             
             % Layer backward function goes here
             
-            dLdX = 0 * X; %This layer doesn't have a learnable parameter so we don't need a backward function
-            
+            dLdX = X; %This layer doesn't have a learnable parameter so we don't need a backward function
         end
     end
 end
