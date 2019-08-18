@@ -10,7 +10,7 @@ else
 end
 
 dataFolder = '../data/images/';
-dataSubFolders = {'accepted'};
+dataSubFolders = {'accepted','rejected'};
 userMsg = waitbar(0,'Reading image data','Name','Reading image data');
 checkpointFolder = '../net/cnn/checkpoint/';
 checkpointFreq = 10;
@@ -54,7 +54,7 @@ YTest = Y(indTest);
 iTrain = 1;
 iTest = 1;
 for i = 1 : numTotal
-    if any(XTrain == i)
+    if any(indTrain == i)
         XTrain(:,:,:,iTrain) = read(ds);
         iTrain = iTrain + 1;
     else
