@@ -1,5 +1,5 @@
 %% Setting up constants. 
-cnnNet = alexnet;
+baseNet = alexnet;
 numClasses = 2;
 inputSize = [64,64,3];
 
@@ -18,7 +18,7 @@ checkpointFreq = 10;
 maxTrainEpochs = 200;
 batchSize = 500;
 algo = 'adam';
-learningRate = 0.01;
+learningRate = 0.001;
 dataUsageForTrain = 0.8;
 rejectedDropRate = 0.6;
 
@@ -70,13 +70,13 @@ close(userMsg);
 endLayers = [
     fullyConnectedLayer(numClasses,'Name','fc','WeightLearnRateFactor',100,'BiasLearnRateFactor',100)
     softmaxLayer('Name','softmax')
-    classificationLayer('Name','classoutput')
+    weightedClassificationLayer('classoutput',[5,1])
     ];
 
 cnnLayers = [
     imageInputLayer(inputSize)
     upsampleLayer()
-    cnnNet.Layers(2:end-3)
+    baseNet.Layers(2:end-3)
     endLayers
     ];
 
