@@ -14,10 +14,11 @@ dataSubFolders = {'accepted','rejected','accepted-simulated'};
 checkpointFolder = '../net/cnn/checkpoint/';
 checkpointFreq = 10;
 
-maxTrainEpochs = 200;
+maxTrainEpochs = 100;
 batchSize = 100;
 algo = 'adam';
 learningRate = 0.00001;
+L2Reg = 0.001;
 dataUsageForTrain = 0.8;
 rejectedDropRate = 0.0;
 
@@ -96,6 +97,7 @@ close(userMsg);
 %% Setup net
 
 endLayers = [
+    dropoutLayer()
     fullyConnectedLayer(numClasses,'Name','fc','WeightLearnRateFactor',50,'BiasLearnRateFactor',50)
     softmaxLayer('Name','softmax')
     weightedClassificationLayer('classification',[10,1])
@@ -111,6 +113,7 @@ cnnLayers = [
 options = trainingOptions(...
      algo,...
     'InitialLearnRate',learningRate,...
+    'L2Regularization',L2Reg,...
     'MaxEpochs',maxTrainEpochs,...
     'MiniBatchSize',batchSize,...
     'Shuffle','every-epoch',...
