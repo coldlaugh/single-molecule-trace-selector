@@ -1,7 +1,7 @@
 %% Setting up constants. 
 baseNet = alexnet;
 numClasses = 2;
-inputSize = [64,64,3];
+inputSize = [128,128,3];
 
 if gpuDeviceCount()
     computeEnv = 'gpu';
@@ -15,11 +15,11 @@ checkpointFolder = '../net/cnn/checkpoint/';
 checkpointFreq = 10;
 
 maxTrainEpochs = 200;
-batchSize = 500;
+batchSize = 100;
 algo = 'adam';
-learningRate = 0.01;
+learningRate = 0.00001;
 dataUsageForTrain = 0.8;
-rejectedDropRate = 0.6;
+rejectedDropRate = 0.4;
 
 netFolder = '../net/cnn/';
 netOutput = 'cnn-alexnet.mat';
@@ -31,9 +31,9 @@ netOutput = 'cnn-alexnet.mat';
 %% Setup data store
 
 ds = fileDatastore(fullfile(dataFolder,dataSubFolders),'IncludeSubfolders',true, 'FileExtensions', '.jpg',...
-    'ReadFcn',@(loc)(single(imresize(imread(loc),inputSize(1:2), 'bilinear'))));
+    'ReadFcn',@(loc)(imresize(imread(loc),inputSize(1:2))));
 
-%% Devide test and train set
+% Devide test and train set
 
 numTotal = length(ds.Files);
 numTrain = floor(dataUsageForTrain * numTotal);
@@ -42,13 +42,34 @@ numTest = numTotal - numTrain;
 indTrain = randperm(numTotal,numTrain);
 indTest = setdiff(1:numTotal,indTrain);
 indTest = indTest(randperm(length(indTest)));
-%% Load train / test data from data store
+% Load train / test data from data store
+
+
+Y = categorical(contains(ds.Files,'accepted')); % label for each trace
+
+
+for i = 1 : numTotal
+    if any(indTrain == i)
+        if (Y(i) == "false") && (rand() < rejectedDropRate)
+            indTrain(indTrain == i) = -1;
+        end
+    else
+        if (Y(i) == "false") && (rand() < rejectedDropRate)
+            indTest(indTest == i) = -1;
+        end
+    end
+end
+
+indTrain = sort(indTrain(indTrain > 0));
+indTest = sort(indTest(indTest > 0));
+
+YTrain = zeros([length(indTrain),1]);
+YTest = zeros([length(indTest),1]);
+
+
 XTrain = zeros([inputSize,length(indTrain)]);
 XTest = zeros([inputSize,length(indTest)]);
 
-Y = categorical(contains(ds.Files,'accepted')); % label for each trace
-YTrain = Y(indTrain);
-YTest = Y(indTest);
 
 iTrain = 1;
 iTest = 1;
@@ -57,26 +78,31 @@ userMsg = waitbar(0,'Reading image data','Name','Reading image data');
 
 for i = 1 : numTotal
     if any(indTrain == i)
-        XTrain(:,:,:,iTrain) = read(ds);
+        [XTrain(:,:,:,iTrain), info] = read(ds);
+        YTrain(iTrain) = contains(info.Filename,'accepted');
         iTrain = iTrain + 1;
-    else
-        XTest(:,:,:,iTest) = read(ds);
+    elseif any(indTest == i)
+        [XTest(:,:,:,iTest), info] = read(ds);
+        YTest(iTest) = contains(info.Filename,'accepted');
         iTest = iTest + 1;
     end
     waitbar(i / numTotal,userMsg);
 end
-
+XTest = XTest / 255.0;
+XTrain = XTrain / 255.0;
+YTrain = categorical(YTrain, [1, 0]);
+YTest = categorical(YTest, [1, 0]);
 close(userMsg);
 %% Setup net
 
 endLayers = [
-    fullyConnectedLayer(numClasses,'Name','fc')
+    fullyConnectedLayer(numClasses,'Name','fc','WeightLearnRateFactor',50,'BiasLearnRateFactor',50)
     softmaxLayer('Name','softmax')
     classificationLayer()
     ];
 
 cnnLayers = [
-    imageInputLayer(inputSize,'normalization','none')
+    imageInputLayer(inputSize)
     upsampleLayer()
     baseNet.Layers(2:end-3)
     endLayers
@@ -90,8 +116,8 @@ options = trainingOptions(...
     'Shuffle','every-epoch',...
     'ExecutionEnvironment',computeEnv,...
     'Plots','training-progress',...
-    'ValidationData',{XTrain,YTrain},...
-    'ValidationFrequency',floor(numTrain / batchSize * 5),...
+    'ValidationData',{XTest,YTest},...
+    'ValidationFrequency',floor(length(indTrain) / batchSize * 5),...
     'ValidationPatience',Inf,...
     'CheckpointPath',''...
 );
@@ -103,5 +129,5 @@ cnnLayers = cnnNet.Layers;
 save(fullfile(netFolder, netOutput),'cnnNet','indTest','indTrain');
 
 %% classify using CNN
-[pred, score] =classify(cnnNet, XTrain, 'ExecutionEnvironment', computeEnv);
-plotconfusion(YTrain, pred);
+[pred, score] =classify(cnnNet, XTest, 'ExecutionEnvironment', computeEnv);
+plotconfusion(YTest, pred);

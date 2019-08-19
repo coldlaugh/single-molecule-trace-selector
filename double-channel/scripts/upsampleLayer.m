@@ -48,14 +48,14 @@ classdef upsampleLayer < nnet.layer.Layer
             if isa(X,'gpuArray')
                 Z = zeros(targetPixel,targetPixel,3,n,classUnderlying(X),class(X));
                 for i = 1 : n
-                    Z(:,:,:,i) = imresize(X(:,:,:,i)/255, ...
-                        [targetPixel, targetPixel],'bicubic');
+                    Z(:,:,:,i) = imresize(X(:,:,:,i), ...
+                        [targetPixel, targetPixel]);
                 end
             else
                 Z = zeros(targetPixel,targetPixel,3,n,class(X));
                 for i = 1 : n
-                    Z(:,:,:,i) = imresize(X(:,:,:,i)/255, ...
-                        [targetPixel, targetPixel],'bicubic');
+                    Z(:,:,:,i) = imresize(X(:,:,:,i), ...
+                        [targetPixel, targetPixel]);
                 end
             end
             
