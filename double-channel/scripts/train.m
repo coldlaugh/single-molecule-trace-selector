@@ -6,7 +6,7 @@ inputSize = [64,64,3];
 if gpuDeviceCount()
     computeEnv = 'gpu';
 else
-    computeEnv = 'parallel';
+    computeEnv = 'cpu';
 end
 
 dataFolder = '../data/images/';
@@ -76,7 +76,7 @@ endLayers = [
     ];
 
 cnnLayers = [
-    imageInputLayer(inputSize)
+    imageInputLayer(inputSize,'normalization','none')
     upsampleLayer()
     baseNet.Layers(2:end-3)
     endLayers
