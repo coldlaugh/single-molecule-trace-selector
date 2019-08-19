@@ -15,6 +15,9 @@ parfor i = 1 : length(files)
         if any(trace.label(j,:))
             outputPath = strcat(outputDir,'accepted/');
         else
+            if (rand() < 0.5)
+                continue;
+            end
             outputPath = strcat(outputDir,'rejected/');
         end
         trace2img([trace.donor(j,:)', trace.acceptor(j,:)'],fullfile(outputPath,strcat(rawName,'-',num2str(j),'.jpg')));
