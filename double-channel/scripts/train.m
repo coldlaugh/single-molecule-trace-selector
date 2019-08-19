@@ -19,7 +19,7 @@ batchSize = 100;
 algo = 'adam';
 learningRate = 0.00001;
 dataUsageForTrain = 0.8;
-rejectedDropRate = 0.4;
+rejectedDropRate = 0.5;
 
 netFolder = '../net/cnn/';
 netOutput = 'cnn-alexnet.mat';
@@ -98,11 +98,11 @@ close(userMsg);
 endLayers = [
     fullyConnectedLayer(numClasses,'Name','fc','WeightLearnRateFactor',50,'BiasLearnRateFactor',50)
     softmaxLayer('Name','softmax')
-    classificationLayer()
+    weightedClassificationLayer('classification',[10,1])
     ];
 
 cnnLayers = [
-    imageInputLayer(inputSize)
+    imageInputLayer(inputSize,'normalization','none')
     upsampleLayer()
     baseNet.Layers(2:end-3)
     endLayers
@@ -118,7 +118,7 @@ options = trainingOptions(...
     'Plots','training-progress',...
     'ValidationData',{XTest,YTest},...
     'ValidationFrequency',floor(length(indTrain) / batchSize * 5),...
-    'ValidationPatience',Inf,...
+    'ValidationPatience',2,...
     'CheckpointPath',''...
 );
 
@@ -126,7 +126,7 @@ options = trainingOptions(...
 
 [cnnNet,info] = trainNetwork(XTrain,YTrain,cnnLayers,options);
 cnnLayers = cnnNet.Layers;
-save(fullfile(netFolder, netOutput),'cnnNet','indTest','indTrain');
+save(fullfile(netFolder, netOutput),'cnnNet','indTest','indTrain','info');
 
 %% classify using CNN
 [pred, score] =classify(cnnNet, XTest, 'ExecutionEnvironment', computeEnv);
