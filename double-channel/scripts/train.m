@@ -10,7 +10,7 @@ else
 end
 
 dataFolder = '../data/images/';
-dataSubFolders = {'accepted','rejected'};
+dataSubFolders = {'accepted','rejected','accepted-simulated'};
 checkpointFolder = '../net/cnn/checkpoint/';
 checkpointFreq = 10;
 
@@ -19,7 +19,7 @@ batchSize = 100;
 algo = 'adam';
 learningRate = 0.00001;
 dataUsageForTrain = 0.8;
-rejectedDropRate = 0.5;
+rejectedDropRate = 0.0;
 
 netFolder = '../net/cnn/';
 netOutput = 'cnn-alexnet.mat';
@@ -118,7 +118,7 @@ options = trainingOptions(...
     'Plots','training-progress',...
     'ValidationData',{XTest,YTest},...
     'ValidationFrequency',floor(length(indTrain) / batchSize * 5),...
-    'ValidationPatience',2,...
+    'ValidationPatience',Inf,...
     'CheckpointPath',''...
 );
 
