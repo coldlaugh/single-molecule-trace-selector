@@ -14,11 +14,11 @@ dataSubFolders = {'accepted','rejected','accepted-simulated'};
 checkpointFolder = '../net/cnn/checkpoint/';
 checkpointFreq = 10;
 
-maxTrainEpochs = 100;
-batchSize = 100;
+maxTrainEpochs = 200;
+batchSize = 200;
 algo = 'adam';
 learningRate = 0.00001;
-L2Reg = 0.001;
+L2Reg = 0.002;
 dataUsageForTrain = 0.8;
 rejectedDropRate = 0.0;
 
@@ -40,22 +40,24 @@ numTotal = length(ds.Files);
 numTrain = floor(dataUsageForTrain * numTotal);
 numTest = numTotal - numTrain;
 
-indTrain = randperm(numTotal,numTrain);
-indTest = setdiff(1:numTotal,indTrain);
-indTest = indTest(randperm(length(indTest)));
+% indTrain = randperm(numTotal,numTrain);
+% indTest = setdiff(1:numTotal,indTrain);
+% indTest = indTest(randperm(length(indTest)));
 % Load train / test data from data store
 
 
 Y = categorical(contains(ds.Files,'accepted')); % label for each trace
-
+Y2 = categorical(contains(ds.Files,'simulated'));
 
 for i = 1 : numTotal
     if any(indTrain == i)
         if (Y(i) == "false") && (rand() < rejectedDropRate)
             indTrain(indTrain == i) = -1;
         end
-    else
+    elseif any(indTest == i)
         if (Y(i) == "false") && (rand() < rejectedDropRate)
+            indTest(indTest == i) = -1;
+        elseif Y2(i) == "true"
             indTest(indTest == i) = -1;
         end
     end
@@ -86,6 +88,8 @@ for i = 1 : numTotal
         [XTest(:,:,:,iTest), info] = read(ds);
         YTest(iTest) = contains(info.Filename,'accepted');
         iTest = iTest + 1;
+    else
+        read(ds);
     end
     waitbar(i / numTotal,userMsg);
 end
@@ -97,10 +101,10 @@ close(userMsg);
 %% Setup net
 
 endLayers = [
-    dropoutLayer()
+    dropoutLayer(0.9)
     fullyConnectedLayer(numClasses,'Name','fc','WeightLearnRateFactor',50,'BiasLearnRateFactor',50)
     softmaxLayer('Name','softmax')
-    weightedClassificationLayer('classification',[10,1])
+    weightedClassificationLayer('classification',[3,1])
     ];
 
 cnnLayers = [
@@ -120,8 +124,8 @@ options = trainingOptions(...
     'ExecutionEnvironment',computeEnv,...
     'Plots','training-progress',...
     'ValidationData',{XTest,YTest},...
-    'ValidationFrequency',floor(length(indTrain) / batchSize * 5),...
-    'ValidationPatience',Inf,...
+    'ValidationFrequency',floor(length(indTrain) / batchSize * 2),...
+    'ValidationPatience',5,...
     'CheckpointPath',''...
 );
 
