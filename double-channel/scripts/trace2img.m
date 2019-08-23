@@ -15,9 +15,13 @@ function trace2img(traceData, file)
     axis square;
     box off;
     graph.Position = [-0.02,-0.02,1.04,1.04];
-    saveas(graph,file);
-    img = imread(file);
-    img = imresize(img,[256,256]);
-    imwrite(img,file);
+    if ~isempty(file)
+        saveas(graph,file);
+        img = imread(file);
+        img = imresize(img,[256,256]);
+        imwrite(img,file);
+    else
+        pause();
+    end
     close(fig)
 
