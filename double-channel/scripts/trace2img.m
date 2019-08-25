@@ -1,8 +1,8 @@
 function trace2img(traceData, file)
     fig = figure('Name','trace2img');
     nstart = 1;
-%     filter = [1/12,1/12,1/6,1/3,1/6,1/12,1/12];
-    filter = 1;
+    filter = [1/12,1/12,1/6,1/3,1/6,1/12,1/12];
+%     filter = 1;
     x = conv(traceData(nstart:end, 1), filter);
     y = conv(traceData(nstart:end, 2), filter);
     plot(x,y,'ro');

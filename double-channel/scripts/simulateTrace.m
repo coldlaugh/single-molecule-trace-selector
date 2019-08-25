@@ -133,7 +133,7 @@ for experiment = 1 : 1000
     
     if save_traces==1
 %         waitbar(experiment/100,f,'Simulating traces');
-        path = '../data/images/accepted-simulated/';
+        path = '../data/images-smooth/accepted-simulated/';
         trace = [donor acceptor selection];
         symbols = ['a':'z' 'A':'Z' '0':'9'];
         MAX_ST_LENGTH = 10;
