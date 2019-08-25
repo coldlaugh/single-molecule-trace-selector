@@ -23,15 +23,15 @@ for experiment = 1 : 1000
     gamma = 1; % Ratio of Cy5 intensity under 100% FRET to Cy3 intensity under no FRET. (Simulates differences in quantum yield, detector efficiency, etc.)
 
     totcounts = 1000; %Total intensity counts for Cy5 in high-FRET state (Cy3 intensity is determined based on totcounts, FRET, and gamma).
-    frames = 4000; %Number of frames
-    noise = random('Uniform',0.05,0.2)*totcounts; % Noise level (currently a constant multiple of totcounts, and independent of channel)
+    frames = randi([1000,6000]); %Number of frames
+    noise = random('Uniform',0.1,0.3)*totcounts; % Noise level (currently a constant multiple of totcounts, and independent of channel)
 
     %Define transition probabilities between states (if they don't add up to
     %100%, they will be renormalized automatically)
 
     % Donor and acceptor photobleaching probabilities
-    Pbleach_d = 1/1000;
-    Pbleach_a = 1/1000;
+    Pbleach_d = 1 / random('Uniform',500,1500);
+    Pbleach_a = 1 / random('Uniform',500,1500);
 
     % Generate random transition probability matrix
     % Pmat = random('Gamma',2,0.006,Ns,Ns);
@@ -122,12 +122,9 @@ for experiment = 1 : 1000
 
     acceptor = acceptor_true + random('normal',0,noise,frames,1);
     donor = donor_true + random('normal',0,noise,frames,1);
-
-    baseline = min([acceptor;donor]);
-    if (baseline < 0)
-        acceptor = acceptor - baseline;
-        donor = donor - baseline;
-    end
+    acceptor = abs(acceptor);
+    donor = abs(donor);
+    
     selection = (acceptor_true>0) & (donor_true>0);
     FRET = acceptor./(donor+acceptor);
     
@@ -142,6 +139,8 @@ for experiment = 1 : 1000
         st = symbols (nums);
         loc = strcat(path,'simulatedTrace_',st,'.jpg');
         trace2img([donor acceptor],loc);
+%         figure(2);cla;plot(donor,'g-');hold on;plot(acceptor,'r-');
+%         trace2img([donor acceptor],'');
 %         save(loc,'trace');
     end
     
