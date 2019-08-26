@@ -5,7 +5,8 @@ function trace2img(traceData, file)
 %     filter = 1;
     x = conv(traceData(nstart:end, 1), filter);
     y = conv(traceData(nstart:end, 2), filter);
-    plot(x,y,'ro');
+%     plot(x,y,'ro');
+    scatter(x,y,'ro','MarkerEdgeAlpha',0.2)
     fig.Position = [100   100   300   300];
     graph = gca;
 %     graph.XLim = [-0.0,1.0] .* max(traceData(nstart:end,1));

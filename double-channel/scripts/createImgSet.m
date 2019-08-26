@@ -3,7 +3,7 @@
 folder = '/Users/lzhang865/Desktop/github/single-molecule-trace-selector/double-channel/data/traces';
 pattern = '*.mltraces';
 files = dir(fullfile(folder,pattern));
-outputDir = '../data/images/';
+outputDir = '../data/images-alpha/';
 
 %% Create images and organize them into folders
 parfor i = 1 : length(files)
