@@ -1,7 +1,7 @@
 %% Setting up constants. 
 baseNet = alexnet;
 numClasses = 2;
-inputSize = [128,128,3];
+inputSize = [32,32,3];
 
 if gpuDeviceCount()
     computeEnv = 'gpu';
@@ -9,16 +9,16 @@ else
     computeEnv = 'cpu';
 end
 
-dataFolder = '../data/images/';
+dataFolder = '../data/images-smooth/';
 dataSubFolders = {'accepted','rejected','accepted-simulated'};
 checkpointFolder = '../net/cnn/checkpoint/';
 checkpointFreq = 10;
 
-maxTrainEpochs = 200;
-batchSize = 200;
+maxTrainEpochs = 100;
+batchSize = 500;
 algo = 'adam';
-learningRate = 0.00001;
-L2Reg = 0.002;
+learningRate = 0.0001;
+L2Reg = 0.001;
 dataUsageForTrain = 0.8;
 rejectedDropRate = 0.0;
 
@@ -40,9 +40,9 @@ numTotal = length(ds.Files);
 numTrain = floor(dataUsageForTrain * numTotal);
 numTest = numTotal - numTrain;
 
-% indTrain = randperm(numTotal,numTrain);
-% indTest = setdiff(1:numTotal,indTrain);
-% indTest = indTest(randperm(length(indTest)));
+indTrain = randperm(numTotal,numTrain);
+indTest = setdiff(1:numTotal,indTrain);
+indTest = indTest(randperm(length(indTest)));
 % Load train / test data from data store
 
 
@@ -57,8 +57,8 @@ for i = 1 : numTotal
     elseif any(indTest == i)
         if (Y(i) == "false") && (rand() < rejectedDropRate)
             indTest(indTest == i) = -1;
-        elseif Y2(i) == "true"
-            indTest(indTest == i) = -1;
+%         elseif Y2(i) == "true"
+%             indTest(indTest == i) = -1;
         end
     end
 end
@@ -97,20 +97,36 @@ XTest = XTest / 255.0;
 XTrain = XTrain / 255.0;
 YTrain = categorical(YTrain, [1, 0]);
 YTest = categorical(YTest, [1, 0]);
+indPerm = randperm(length(YTest));
+XTest = XTest(:,:,:,indPerm);
+YTest = categorical(YTest(indPerm));
 close(userMsg);
 %% Setup net
 
 endLayers = [
-    dropoutLayer(0.9)
-    fullyConnectedLayer(numClasses,'Name','fc','WeightLearnRateFactor',50,'BiasLearnRateFactor',50)
+    fullyConnectedLayer(numClasses,'Name','fc','WeightLearnRateFactor',10,'BiasLearnRateFactor',10)
     softmaxLayer('Name','softmax')
-    weightedClassificationLayer('classification',[3,1])
+    weightedClassificationLayer('classification',[1,1])
     ];
 
 cnnLayers = [
-    imageInputLayer(inputSize,'normalization','none')
-    upsampleLayer()
-    baseNet.Layers(2:end-3)
+    imageInputLayer(inputSize,'normalization','zerocenter')
+%     upsampleLayer()
+%     baseNet.Layers(2:end-3)
+    convolution2dLayer(3,30)
+    reluLayer
+    maxPooling2dLayer(3,'Stride',2)
+    batchNormalizationLayer
+    convolution2dLayer(3,30)
+    reluLayer
+%     maxPooling2dLayer(3,'Stride',2)
+    convolution2dLayer(3,30)
+    reluLayer
+    convolution2dLayer(3,10)
+    reluLayer
+    averagePooling2dLayer(3,'Stride',2)
+    fullyConnectedLayer(300)
+    reluLayer
     endLayers
     ];
 
@@ -125,7 +141,7 @@ options = trainingOptions(...
     'Plots','training-progress',...
     'ValidationData',{XTest,YTest},...
     'ValidationFrequency',floor(length(indTrain) / batchSize * 2),...
-    'ValidationPatience',5,...
+    'ValidationPatience',20,...
     'CheckpointPath',''...
 );
 
@@ -136,5 +152,5 @@ cnnLayers = cnnNet.Layers;
 save(fullfile(netFolder, netOutput),'cnnNet','indTest','indTrain','info');
 
 %% classify using CNN
-[pred, score] =classify(cnnNet, XTest, 'ExecutionEnvironment', computeEnv);
+[pred, score] =classify(cnnNet, XTest, 'ExecutionEnvironment', computeEnv, 'MiniBatchSize', batchSize);
 plotconfusion(YTest, pred);
