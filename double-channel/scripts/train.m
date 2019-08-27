@@ -74,6 +74,8 @@ YTest = zeros([length(indTest),1]);
 XTrain = zeros([inputSize,length(indTrain)]);
 XTest = zeros([inputSize,length(indTest)]);
 
+FileTrain = cell([length(indTrain),1]);
+FileTest = cell([length(indTest),1]);
 
 iTrain = 1;
 iTest = 1;
@@ -88,10 +90,12 @@ for i = 1 : numTotal
     if any(indTrain == i)
         XTrain(:,:,:,iTrain) = data;
         YTrain(iTrain) = contains(info.Filename,'accepted');
+        FileTrain{iTrain} = info.Filename;
         iTrain = iTrain + 1;
     elseif any(indTest == i)
         XTest(:,:,:,iTest) = data;
         YTest(iTest) = contains(info.Filename,'accepted');
+        FileTest{iTest} = info.Filename;
         iTest = iTest + 1;
     end
     waitbar(i / numTotal,userMsg);
@@ -103,6 +107,7 @@ YTest = categorical(YTest, [1, 0]);
 indPerm = randperm(length(YTest));
 XTest = XTest(:,:,:,indPerm);
 YTest = categorical(YTest(indPerm));
+FileTest = FileTest(indPerm);
 close(userMsg);
 %% Setup net
 
