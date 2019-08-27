@@ -9,17 +9,18 @@ else
     computeEnv = 'cpu';
 end
 
-dataFolder = '../data/images-smooth/';
-dataSubFolders = {'accepted','rejected','accepted-simulated'};
+dataFolder = '../data/images-alpha/';
+dataSubFolders = {'accepted-simulated'};
 checkpointFolder = '../net/cnn/checkpoint/';
 checkpointFreq = 10;
 
 maxTrainEpochs = 100;
 batchSize = 500;
 algo = 'adam';
-learningRate = 0.0001;
-L2Reg = 0.001;
-dataUsageForTrain = 0.8;
+learningRate = 0.0005;
+L2Reg = 0.00001;
+WeightsInitializer = 'glorot';
+dataUsageForTrain = 0.5;
 rejectedDropRate = 0.0;
 
 netFolder = '../net/cnn/';
@@ -63,8 +64,8 @@ for i = 1 : numTotal
     end
 end
 
-indTrain = sort(indTrain(indTrain > 0));
-indTest = sort(indTest(indTest > 0));
+indTrain = indTrain(indTrain > 0);
+indTest = indTest(indTest > 0);
 
 YTrain = zeros([length(indTrain),1]);
 YTest = zeros([length(indTest),1]);
@@ -80,16 +81,18 @@ iTest = 1;
 userMsg = waitbar(0,'Reading image data','Name','Reading image data');
 
 for i = 1 : numTotal
+    [data, info] = read(ds);
+    if contains(info.Filename, 'HaMMy')
+        continue;
+    end
     if any(indTrain == i)
-        [XTrain(:,:,:,iTrain), info] = read(ds);
+        XTrain(:,:,:,iTrain) = data;
         YTrain(iTrain) = contains(info.Filename,'accepted');
         iTrain = iTrain + 1;
     elseif any(indTest == i)
-        [XTest(:,:,:,iTest), info] = read(ds);
+        XTest(:,:,:,iTest) = data;
         YTest(iTest) = contains(info.Filename,'accepted');
         iTest = iTest + 1;
-    else
-        read(ds);
     end
     waitbar(i / numTotal,userMsg);
 end
@@ -113,19 +116,23 @@ cnnLayers = [
     imageInputLayer(inputSize,'normalization','zerocenter')
 %     upsampleLayer()
 %     baseNet.Layers(2:end-3)
-    convolution2dLayer(3,30)
-    reluLayer
-    maxPooling2dLayer(3,'Stride',2)
+    convolution2dLayer(5,10,'Padding','same','WeightsInitializer',WeightsInitializer)
     batchNormalizationLayer
-    convolution2dLayer(3,30)
+    maxPooling2dLayer(3,'Stride',2)
     reluLayer
-%     maxPooling2dLayer(3,'Stride',2)
-    convolution2dLayer(3,30)
+    
+    dropoutLayer
+    
+    convolution2dLayer(3,10,'Padding','same','WeightsInitializer',WeightsInitializer)
+    maxPooling2dLayer(3,'Stride',2)
     reluLayer
-    convolution2dLayer(3,10)
+    convolution2dLayer(3,10,'Padding','same','WeightsInitializer',WeightsInitializer)
     reluLayer
-    averagePooling2dLayer(3,'Stride',2)
-    fullyConnectedLayer(300)
+    convolution2dLayer(3,10,'Padding','same','WeightsInitializer',WeightsInitializer)
+    maxPooling2dLayer(3,'Stride',2)
+    reluLayer
+    
+    fullyConnectedLayer(10,'WeightsInitializer',WeightsInitializer,'WeightLearnRateFactor',5,'BiasLearnRateFactor',5)
     reluLayer
     endLayers
     ];
@@ -154,3 +161,13 @@ save(fullfile(netFolder, netOutput),'cnnNet','indTest','indTrain','info');
 %% classify using CNN
 [pred, score] =classify(cnnNet, XTest, 'ExecutionEnvironment', computeEnv, 'MiniBatchSize', batchSize);
 plotconfusion(YTest, pred);
+
+
+%% Showing acc curve
+figure(1);clf;hold on;
+for x = 0 : 0.01 : 1
+    acc = sum((score(:,1) > x & YTest == "1")) + sum((score(:,1) < x & YTest == "0"));
+    acc = acc / length(pred);
+    plot(x, acc, 'bo')
+end
+hold off;
