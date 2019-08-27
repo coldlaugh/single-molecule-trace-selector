@@ -10,7 +10,7 @@ else
 end
 
 dataFolder = '../data/images-alpha/';
-dataSubFolders = {'accepted-simulated'};
+dataSubFolders = {'accepted','rejected'};
 checkpointFolder = '../net/cnn/checkpoint/';
 checkpointFreq = 10;
 
@@ -100,8 +100,8 @@ for i = 1 : numTotal
     end
     waitbar(i / numTotal,userMsg);
 end
-XTest = XTest / 255.0;
-XTrain = XTrain / 255.0;
+% XTest = XTest / 255.0;
+% XTrain = XTrain / 255.0;
 YTrain = categorical(YTrain, [1, 0]);
 YTest = categorical(YTest, [1, 0]);
 indPerm = randperm(length(YTest));
