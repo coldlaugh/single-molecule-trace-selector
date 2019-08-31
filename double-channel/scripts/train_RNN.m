@@ -16,7 +16,7 @@ checkpointFolder = '../net/rnn/checkpoint/';
 checkpointFreq = 10;
 
 maxTrainEpochs = 500;
-batchSize = 100;
+batchSize = 50;
 algo = 'adam';
 learningRate = 0.0005;
 L2Reg = 0.00001;
@@ -86,7 +86,8 @@ userMsg = waitbar(0,'Reading serial data','Name','Reading serial data');
 for i = 1 : numTotal
     [data, info] = read(ds);
     data = single(data.data);
-    data = stackTrace(data(1,:), data(2,:), numStack);
+    normFactor = 1 / mean(data(1,:) + data(2,:));
+    data = normFactor * stackTrace(data(1,:), data(2,:), numStack);
     if any(indTrain == i)
         XTrain{iTrain} = data;
         YTrain(iTrain) = contains(info.Filename,'accepted');
