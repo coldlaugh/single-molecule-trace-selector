@@ -2,7 +2,7 @@
 
 numClasses = 2;
 numHiddenUnits = 100;
-numStack = 20;
+numStack = 5;
 
 if gpuDeviceCount()
     computeEnv = 'gpu';
@@ -10,9 +10,9 @@ else
     computeEnv = 'cpu';
 end
 
-dataFolder = '../data/images-alpha/';
-dataSubFolders = {'accepted','rejected','accepted-simulated-filtered'};
-checkpointFolder = '../net/cnn/checkpoint/';
+dataFolder = '../data/serial';
+dataSubFolders = {'accepted','rejected'};
+checkpointFolder = '../net/rnn/checkpoint/';
 checkpointFreq = 10;
 
 maxTrainEpochs = 500;
@@ -22,10 +22,10 @@ learningRate = 0.0005;
 L2Reg = 0.00001;
 WeightsInitializer = 'glorot';
 dataUsageForTrain = 0.8;
-rejectedDropRate = 0.0;
+rejectedDropRate = 0.5;
 
-netFolder = '../net/cnn/';
-netOutput = 'cnn-alexnet.mat';
+netFolder = '../net/rnn/';
+netOutput = 'rnn-LSTM.mat';
 
 %%  setup folders
 [~,~] = mkdir(checkpointFolder);
@@ -33,8 +33,8 @@ netOutput = 'cnn-alexnet.mat';
 
 %% Setup data store
 
-ds = fileDatastore(fullfile(dataFolder,dataSubFolders),'IncludeSubfolders',true, 'FileExtensions', '.jpg',...
-    'ReadFcn',@(loc)(imresize(imread(loc),inputSize(1:2))));
+ds = fileDatastore(fullfile(dataFolder,dataSubFolders),'IncludeSubfolders',true, 'FileExtensions', '.mat',...
+    'ReadFcn',@(loc)load(loc,'data'));
 
 % Devide test and train set
 
@@ -72,8 +72,8 @@ YTrain = zeros([length(indTrain),1]);
 YTest = zeros([length(indTest),1]);
 
 
-XTrain = zeros([inputSize,length(indTrain)]);
-XTest = zeros([inputSize,length(indTest)]);
+XTrain = cell([length(indTrain),1]);
+XTest = cell([length(indTest),1]);
 
 FileTrain = cell([length(indTrain),1]);
 FileTest = cell([length(indTest),1]);
@@ -81,66 +81,40 @@ FileTest = cell([length(indTest),1]);
 iTrain = 1;
 iTest = 1;
 
-userMsg = waitbar(0,'Reading image data','Name','Reading image data');
+userMsg = waitbar(0,'Reading serial data','Name','Reading serial data');
 
 for i = 1 : numTotal
     [data, info] = read(ds);
-    if contains(info.Filename, 'HaMMy')
-        continue;
-    end
+    data = single(data.data);
+    data = stackTrace(data(1,:), data(2,:), numStack);
     if any(indTrain == i)
-        XTrain(:,:,:,iTrain) = data;
+        XTrain{iTrain} = data;
         YTrain(iTrain) = contains(info.Filename,'accepted');
         FileTrain{iTrain} = info.Filename;
         iTrain = iTrain + 1;
     elseif any(indTest == i)
-        XTest(:,:,:,iTest) = data;
+        XTest{iTest} = data;
         YTest(iTest) = contains(info.Filename,'accepted');
         FileTest{iTest} = info.Filename;
         iTest = iTest + 1;
     end
     waitbar(i / numTotal,userMsg);
 end
-% XTest = XTest / 255.0;
-% XTrain = XTrain / 255.0;
 YTrain = categorical(YTrain, [1, 0]);
 YTest = categorical(YTest, [1, 0]);
 indPerm = randperm(length(YTest));
-XTest = XTest(:,:,:,indPerm);
+XTest = XTest(indPerm);
 YTest = categorical(YTest(indPerm));
 FileTest = FileTest(indPerm);
 close(userMsg);
 %% Setup net
 
-endLayers = [
-    fullyConnectedLayer(numClasses,'Name','fc','WeightLearnRateFactor',10,'BiasLearnRateFactor',10)
-    softmaxLayer('Name','softmax')
+rnnLayers = [
+    sequenceInputLayer(2 * numStack)
+    lstmLayer(numHiddenUnits, 'OutputMode', 'last')
+    fullyConnectedLayer(numClasses)
+    softmaxLayer
     weightedClassificationLayer('classification',[1,1])
-    ];
-
-cnnLayers = [
-    imageInputLayer(inputSize,'normalization','zerocenter')
-%     upsampleLayer()
-%     baseNet.Layers(2:end-3)
-    convolution2dLayer(5,10,'Padding','same','WeightsInitializer',WeightsInitializer)
-    batchNormalizationLayer
-    maxPooling2dLayer(3,'Stride',2)
-    reluLayer
-    
-    dropoutLayer
-    
-    convolution2dLayer(3,10,'Padding','same','WeightsInitializer',WeightsInitializer)
-    maxPooling2dLayer(3,'Stride',2)
-    reluLayer
-    convolution2dLayer(3,10,'Padding','same','WeightsInitializer',WeightsInitializer)
-    reluLayer
-    convolution2dLayer(3,10,'Padding','same','WeightsInitializer',WeightsInitializer)
-    maxPooling2dLayer(3,'Stride',2)
-    reluLayer
-    
-    fullyConnectedLayer(10,'WeightsInitializer',WeightsInitializer,'WeightLearnRateFactor',5,'BiasLearnRateFactor',5)
-    reluLayer
-    endLayers
     ];
 
 options = trainingOptions(...
@@ -158,14 +132,14 @@ options = trainingOptions(...
     'CheckpointPath',''...
 );
 
-%% train CNN
+%% train RNN
 
-[cnnNet,info] = trainNetwork(XTrain,YTrain,cnnLayers,options);
-cnnLayers = cnnNet.Layers;
-save(fullfile(netFolder, netOutput),'cnnNet','indTest','indTrain','info');
+[rnnNet,info] = trainNetwork(XTrain,YTrain,rnnLayers,options);
+rnnLayers = rnnNet.Layers;
+save(fullfile(netFolder, netOutput),'rnnNet','indTest','indTrain','info');
 
-%% classify using CNN
-[pred, score] =classify(cnnNet, XTest, 'ExecutionEnvironment', computeEnv, 'MiniBatchSize', batchSize);
+%% classify using RNN
+[pred, score] =classify(rnnNet, XTest, 'ExecutionEnvironment', computeEnv, 'MiniBatchSize', batchSize);
 plotconfusion(YTest, pred);
 
 
