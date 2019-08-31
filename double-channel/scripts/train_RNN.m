@@ -114,7 +114,7 @@ rnnLayers = [
     lstmLayer(numHiddenUnits, 'OutputMode', 'last')
     fullyConnectedLayer(numClasses)
     softmaxLayer
-    weightedClassificationLayer('classification',[1,1])
+    classificationLayer
     ];
 
 options = trainingOptions(...
