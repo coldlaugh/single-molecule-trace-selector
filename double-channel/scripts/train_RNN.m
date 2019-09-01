@@ -2,7 +2,7 @@
 
 numClasses = 2;
 numHiddenUnits = 100;
-numStack = 5;
+numStack = 10;
 
 if gpuDeviceCount()
     computeEnv = 'gpu';
@@ -16,13 +16,13 @@ checkpointFolder = '../net/rnn/checkpoint/';
 checkpointFreq = 10;
 
 maxTrainEpochs = 500;
-batchSize = 50;
+batchSize = 100;
 algo = 'adam';
-learningRate = 0.005;
+learningRate = 0.0001;
 L2Reg = 0.00001;
 WeightsInitializer = 'glorot';
 dataUsageForTrain = 0.8;
-rejectedDropRate = 0.5;
+rejectedDropRate = 0.8;
 
 netFolder = '../net/rnn/';
 netOutput = 'rnn-LSTM.mat';
@@ -86,7 +86,9 @@ userMsg = waitbar(0,'Reading serial data','Name','Reading serial data');
 for i = 1 : numTotal
     [data, info] = read(ds);
     data = single(data.data);
-    normFactor = 1 / mean(data(1,:) + data(2,:));
+    data(1,:) = conv(data(1,:), [1/3,1/3,1/3], 'same');
+    data(2,:) = conv(data(2,:), [1/3,1/3,1/3], 'same');
+    normFactor = 1 / max(data(1,:) + data(2,:));
     data = normFactor * stackTrace(data(1,:), data(2,:), numStack);
     if any(indTrain == i)
         XTrain{iTrain} = data;
@@ -112,8 +114,9 @@ close(userMsg);
 
 rnnLayers = [
     sequenceInputLayer(2 * numStack)
+    lstmLayer(numHiddenUnits, 'OutputMode', 'sequence')
     lstmLayer(numHiddenUnits, 'OutputMode', 'last')
-    fullyConnectedLayer(numClasses,'WeightLearnRateFactor',5,'BiasLearnRateFactor',5)
+    fullyConnectedLayer(numClasses,'WeightLearnRateFactor',10,'BiasLearnRateFactor',10)
     softmaxLayer
     classificationLayer
     ];
@@ -124,7 +127,7 @@ options = trainingOptions(...
     'L2Regularization',L2Reg,...
     'MaxEpochs',maxTrainEpochs,...
     'MiniBatchSize',batchSize,...
-    'Shuffle','every-epoch',...
+    'Shuffle','once',...
     'ExecutionEnvironment',computeEnv,...
     'Plots','training-progress',...
     'ValidationData',{XTest,YTest},...
