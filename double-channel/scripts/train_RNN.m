@@ -18,7 +18,7 @@ checkpointFreq = 10;
 maxTrainEpochs = 500;
 batchSize = 100;
 algo = 'adam';
-learningRate = 0.0005;
+learningRate = 0.005;
 L2Reg = 0.00001;
 WeightsInitializer = 'glorot';
 dataUsageForTrain = 0.8;
@@ -112,9 +112,9 @@ close(userMsg);
 rnnLayers = [
     sequenceInputLayer(2 * numStack)
     lstmLayer(numHiddenUnits, 'OutputMode', 'last')
-    fullyConnectedLayer(numClasses)
+    fullyConnectedLayer(numClasses,'WeightLearnRateFactor',5,'BiasLearnRateFactor',5)
     softmaxLayer
-    weightedClassificationLayer('classification',[1,1])
+    classificationLayer
     ];
 
 options = trainingOptions(...
