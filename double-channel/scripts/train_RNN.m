@@ -131,6 +131,7 @@ close(userMsg);
 rnnLayers = [
     sequenceInputLayer(2 * numStack)
     bilstmLayer(numHiddenUnits, 'OutputMode', 'sequence')
+    bilstmLayer(numHiddenUnits, 'OutputMode', 'sequence')
     bilstmLayer(numHiddenUnits, 'OutputMode', 'last')
     fullyConnectedLayer(floor(numHiddenUnits/4),'WeightLearnRateFactor', 2, 'BiasLearnRateFactor', 2)
     reluLayer
