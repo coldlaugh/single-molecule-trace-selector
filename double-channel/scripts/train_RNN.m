@@ -87,7 +87,10 @@ for i = 1 : numTotal
     [data, info] = read(ds);
     data = single(data.data);
     normFactor = 1 / mean(data(1,:) + data(2,:));
-    data = normFactor * stackTrace(data(1,:), data(2,:), numStack);
+    data = normFactor * [
+        reshape(data(1,1:end-mod(end,numStack)),numStack,[]);
+        reshape(data(2,1:end-mod(end,numStack)),numStack,[])
+        ];
     if any(indTrain == i)
         XTrain{iTrain} = data;
         YTrain(iTrain) = contains(info.Filename,'accepted');
