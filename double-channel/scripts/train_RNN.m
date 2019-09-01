@@ -2,7 +2,7 @@
 
 numClasses = 2;
 numHiddenUnits = 100;
-numStack = 5;
+numStack = 10;
 
 if gpuDeviceCount()
     computeEnv = 'gpu';
@@ -15,8 +15,8 @@ dataSubFolders = {'accepted','rejected'};
 checkpointFolder = '../net/rnn/checkpoint/';
 checkpointFreq = 10;
 
-maxTrainEpochs = 500;
-batchSize = 50;
+maxTrainEpochs = 100;
+batchSize = 600;
 algo = 'adam';
 learningRate = 0.005;
 L2Reg = 0.00001;
@@ -85,8 +85,10 @@ userMsg = waitbar(0,'Reading serial data','Name','Reading serial data');
 
 for i = 1 : numTotal
     [data, info] = read(ds);
-    data = single(data.data);
-    normFactor = 1 / mean(data(1,:) + data(2,:));
+    data = data.data;
+    data(1,:) = conv(data(1,:),[1/3,1/3,1/3],'same');
+    data(2,:) = conv(data(2,:),[1/3,1/3,1/3],'same');
+    normFactor = 1 / max(data(:));
     data = normFactor * [
         reshape(data(1,1:end-mod(end,numStack)),numStack,[]);
         reshape(data(2,1:end-mod(end,numStack)),numStack,[])
@@ -106,17 +108,33 @@ for i = 1 : numTotal
 end
 YTrain = categorical(YTrain, [1, 0]);
 YTest = categorical(YTest, [1, 0]);
-indPerm = randperm(length(YTest));
-XTest = XTest(indPerm);
-YTest = categorical(YTest(indPerm));
-FileTest = FileTest(indPerm);
+
+idx = randperm(length(YTrain));
+XTrain = XTrain(idx);
+YTrain = categorical(YTrain(idx));
+sequenceLengths = cellfun(@(X) size(X,2), XTrain);
+[~, idx] = sort(sequenceLengths);
+XTrain = XTrain(idx);
+YTrain = categorical(YTrain(idx));
+
+idx = randperm(length(YTest));
+XTest = XTest(idx);
+YTest = categorical(YTest(idx));
+sequenceLengths = cellfun(@(X) size(X,2), XTest);
+[~, idx] = sort(sequenceLengths);
+XTest = XTest(idx);
+YTest = categorical(YTest(idx));
+
 close(userMsg);
 %% Setup net
 
 rnnLayers = [
     sequenceInputLayer(2 * numStack)
-    lstmLayer(numHiddenUnits, 'OutputMode', 'last')
-    fullyConnectedLayer(numClasses,'WeightLearnRateFactor',5,'BiasLearnRateFactor',5)
+    bilstmLayer(numHiddenUnits, 'OutputMode', 'sequence')
+    bilstmLayer(numHiddenUnits, 'OutputMode', 'last')
+    fullyConnectedLayer(floor(numHiddenUnits/4),'WeightLearnRateFactor', 2, 'BiasLearnRateFactor', 2)
+    reluLayer
+    fullyConnectedLayer(numClasses,'WeightLearnRateFactor', 10, 'BiasLearnRateFactor', 10)
     softmaxLayer
     classificationLayer
     ];
@@ -133,6 +151,8 @@ options = trainingOptions(...
     'ValidationData',{XTest,YTest},...
     'ValidationFrequency',floor(length(indTrain) / batchSize * 2),...
     'ValidationPatience',20,...
+    'SequenceLength','longest',...
+    'SequencePaddingValue', 0,...
     'CheckpointPath',''...
 );
 
@@ -143,7 +163,7 @@ rnnLayers = rnnNet.Layers;
 save(fullfile(netFolder, netOutput),'rnnNet','indTest','indTrain','info');
 
 %% classify using RNN
-[pred, score] =classify(rnnNet, XTest, 'ExecutionEnvironment', computeEnv, 'MiniBatchSize', batchSize);
+[pred, score] =classify(rnnNet, XTest, 'ExecutionEnvironment', computeEnv, 'MiniBatchSize', batchSize, 'SequenceLength', options.SequenceLength);
 plotconfusion(YTest, pred);
 
 
