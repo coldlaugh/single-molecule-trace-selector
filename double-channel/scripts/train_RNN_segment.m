@@ -56,16 +56,10 @@ for i = 1 : numTotal
         if (Y(i) == "false") && (rand() < rejectedDropRate)
             indTrain(indTrain == i) = -1;
         end
-        if contains(ds.Files{i},'HaMMy')
-            indTrain(indTrain == i) = -1;
-        end
     elseif any(indTest == i)
         if (Y(i) == "false") && (rand() < rejectedDropRate)
             indTest(indTest == i) = -1;
         elseif Y2(i) == "true"
-            indTest(indTest == i) = -1;
-        end
-        if contains(ds.Files{i},'HaMMy')
             indTest(indTest == i) = -1;
         end
     end
@@ -167,7 +161,19 @@ save(fullfile(netFolder, netOutput),'rnnNet','indTest','indTrain','info');
 
 %% classify using RNN
 [pred, score] =classify(rnnNet, XTest, 'ExecutionEnvironment', computeEnv, 'MiniBatchSize', batchSize, 'SequenceLength', options.SequenceLength);
-% plotconfusion(YTest, pred);
+label = zeros([length(YTest),1]);
+truth = zeros([length(YTest),1]);
+for i = 1 : length(YTest)
+    if (sum(pred{i} == "1") >= 1) 
+        label(i) = 1;
+    end
+    if any(YTest{i} == "1")
+        truth(i) = 1;
+    end
+end
+label = categorical(label);
+truth = categorical(truth);
+plotconfusion(truth, label);
 
 
 %% Showing acc curve
