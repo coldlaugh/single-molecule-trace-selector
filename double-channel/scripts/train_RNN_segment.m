@@ -62,6 +62,10 @@ for i = 1 : numTotal
             indTest(indTest == i) = -1;
         elseif Y2(i) == "true"
             indTest(indTest == i) = -1;
+            if any(indTrain == -1)
+                idx = find(indTrain == -1, 1);
+                indTrain(idx) = i;
+            end
         end
     end
 end
