@@ -11,7 +11,7 @@ else
 end
 
 dataFolder = '../data/serial';
-dataSubFolders = {'accepted','rejected'};
+dataSubFolders = {'accepted','rejected','simulated'};
 checkpointFolder = '../net/rnn/checkpoint/';
 checkpointFreq = 10;
 
@@ -38,6 +38,7 @@ ds = fileDatastore(fullfile(dataFolder,dataSubFolders),'IncludeSubfolders',true,
 
 % Devide test and train set
 
+files = ds.Files;
 numTotal = length(ds.Files);
 numTrain = floor(dataUsageForTrain * numTotal);
 numTest = numTotal - numTrain;
