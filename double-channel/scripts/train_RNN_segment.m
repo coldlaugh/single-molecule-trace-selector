@@ -18,11 +18,11 @@ checkpointFreq = 10;
 maxTrainEpochs = 100;
 batchSize = 600;
 algo = 'adam';
-learningRate = 0.005;
+learningRate = 0.0001;
 L2Reg = 0.00001;
 WeightsInitializer = 'glorot';
 dataUsageForTrain = 0.8;
-rejectedDropRate = 0.5;
+rejectedDropRate = 0.0;
 
 netFolder = '../net/rnn/';
 netOutput = 'rnn-LSTM-segment.mat';
@@ -86,9 +86,7 @@ userMsg = waitbar(0,'Reading serial data','Name','Reading serial data');
 for i = 1 : numTotal
     [data, info] = read(ds);
     data = data.data;
-    data(1,:) = conv(data(1,:),[1/3,1/3,1/3],'same');
-    data(2,:) = conv(data(2,:),[1/3,1/3,1/3],'same');
-    normFactor = 1 / max(data(:));
+    normFactor = 1 / max([conv(data(1,:),[1/3,1/3,1/3],'same')+conv(data(2,:),[1/3,1/3,1/3],'same')]);
     label = any(reshape(data(3,1:end-mod(end,numStack)), numStack, []));
     data = normFactor * [
         reshape(data(1,1:end-mod(end,numStack)),numStack,[]);
@@ -151,7 +149,7 @@ options = trainingOptions(...
     'ValidationData',{XTest,YTest},...
     'ValidationFrequency',floor(length(indTrain) / batchSize * 2),...
     'ValidationPatience',20,...
-    'SequenceLength','longest',...
+    'SequenceLength','shortest',...
     'SequencePaddingValue', 0,...
     'CheckpointPath',''...
 );
@@ -164,7 +162,19 @@ save(fullfile(netFolder, netOutput),'rnnNet','indTest','indTrain','info');
 
 %% classify using RNN
 [pred, score] =classify(rnnNet, XTest, 'ExecutionEnvironment', computeEnv, 'MiniBatchSize', batchSize, 'SequenceLength', options.SequenceLength);
-plotconfusion(YTest, pred);
+label = zeros([length(YTest),1]);
+truth = zeros([length(YTest),1]);
+for i = 1 : length(YTest)
+    if (sum(pred{i} == "1") >= 1) 
+        label(i) = 1;
+    end
+    if any(YTest{i} == "1")
+        truth(i) = 1;
+    end
+end
+label = categorical(label);
+truth = categorical(truth);
+plotconfusion(truth, label);
 
 
 %% Showing acc curve
