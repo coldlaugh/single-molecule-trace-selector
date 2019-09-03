@@ -182,10 +182,3 @@ plotconfusion(truth, label);
 
 
 %% Showing acc curve
-figure(1);clf;hold on;
-for x = 0 : 0.01 : 1
-    acc = sum((score(:,1) > x & YTest == "1")) + sum((score(:,1) < x & YTest == "0"));
-    acc = acc / length(pred);
-    plot(x, acc, 'bo')
-end
-hold off;
