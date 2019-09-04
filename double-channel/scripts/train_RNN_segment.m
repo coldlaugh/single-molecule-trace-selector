@@ -11,7 +11,7 @@ else
 end
 
 dataFolder = '../data/serial';
-dataSubFolders = {'accepted','rejected'};
+dataSubFolders = {'accepted','rejected','simulated'};
 checkpointFolder = '../net/rnn/checkpoint/';
 checkpointFreq = 10;
 
@@ -38,6 +38,7 @@ ds = fileDatastore(fullfile(dataFolder,dataSubFolders),'IncludeSubfolders',true,
 
 % Devide test and train set
 
+files = ds.Files;
 numTotal = length(ds.Files);
 numTrain = floor(dataUsageForTrain * numTotal);
 numTest = numTotal - numTrain;
@@ -61,6 +62,10 @@ for i = 1 : numTotal
             indTest(indTest == i) = -1;
         elseif Y2(i) == "true"
             indTest(indTest == i) = -1;
+            if any(indTrain == -1)
+                idx = find(indTrain == -1, 1);
+                indTrain(idx) = i;
+            end
         end
     end
 end
@@ -177,10 +182,3 @@ plotconfusion(truth, label);
 
 
 %% Showing acc curve
-figure(1);clf;hold on;
-for x = 0 : 0.01 : 1
-    acc = sum((score(:,1) > x & YTest == "1")) + sum((score(:,1) < x & YTest == "0"));
-    acc = acc / length(pred);
-    plot(x, acc, 'bo')
-end
-hold off;
