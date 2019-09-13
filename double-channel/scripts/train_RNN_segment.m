@@ -23,7 +23,7 @@ WeightsInitializer = 'glorot';
 dataUsageForTrain = 0.8;
 rejectedDropRate = 0.0;
 
-netFolder = '../net/rnn/';
+netFolder = '../experiments/experiment1/';
 netOutput = 'rnn-LSTM-segment.mat';
 
 %%  setup folders

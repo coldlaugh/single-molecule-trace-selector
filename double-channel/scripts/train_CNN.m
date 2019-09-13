@@ -21,7 +21,7 @@ learningRate = 0.0005;
 L2Reg = 0.00001;
 WeightsInitializer = 'glorot';
 
-netFolder = '../net/cnn/';
+netFolder = '../experiments/experiment1/';
 netOutput = 'cnn-alexnet.mat';
 
 %%  setup folders
