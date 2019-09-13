@@ -59,9 +59,8 @@ userMsg = waitbar(0,'Reading image data','Name','Reading image data');
 for i = 1 : numTrain
     data = read(fullfile(dataset.serialFolder, strcat(dataset.trainSet{i},dataset.serialFormat)));
     data = data.data;
-    data(1,:) = conv(data(1,:),[1/3,1/3,1/3],'same');
-    data(2,:) = conv(data(2,:),[1/3,1/3,1/3],'same');
-    normFactor = 1 / max(data(:));
+    normFactor = 1 / max([conv(data(1,:),[1/3,1/3,1/3],'same')+conv(data(2,:),[1/3,1/3,1/3],'same')]);
+    label = any(reshape(data(3,1:end-mod(end,numStack)), numStack, []));
     data = normFactor * [
         reshape(data(1,1:end-mod(end,numStack)),numStack,[]);
         reshape(data(2,1:end-mod(end,numStack)),numStack,[])
@@ -75,9 +74,8 @@ end
 for i = 1 : numTest
     data = read(fullfile(dataset.serialFolder, strcat(dataset.testSet{i},dataset.serialFormat)));
     data = data.data;
-    data(1,:) = conv(data(1,:),[1/3,1/3,1/3],'same');
-    data(2,:) = conv(data(2,:),[1/3,1/3,1/3],'same');
-    normFactor = 1 / max(data(:));
+    normFactor = 1 / max([conv(data(1,:),[1/3,1/3,1/3],'same')+conv(data(2,:),[1/3,1/3,1/3],'same')]);
+    label = any(reshape(data(3,1:end-mod(end,numStack)), numStack, []));
     data = normFactor * [
         reshape(data(1,1:end-mod(end,numStack)),numStack,[]);
         reshape(data(2,1:end-mod(end,numStack)),numStack,[])

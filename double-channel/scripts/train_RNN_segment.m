@@ -10,8 +10,7 @@ else
     computeEnv = 'cpu';
 end
 
-dataFolder = '../data/serial';
-dataSubFolders = {'accepted','rejected','simulated'};
+expt = '../experiments/experiment1/fileNames.mat';
 checkpointFolder = '../net/rnn/checkpoint/';
 checkpointFreq = 10;
 
@@ -33,62 +32,32 @@ netOutput = 'rnn-LSTM-segment.mat';
 
 %% Setup data store
 
-ds = fileDatastore(fullfile(dataFolder,dataSubFolders),'IncludeSubfolders',true, 'FileExtensions', '.mat',...
-    'ReadFcn',@(loc)load(loc,'data'));
+
+dataset = load(expt,'-mat');
+read = @(loc)load(loc,'data');
 
 % Devide test and train set
 
-files = ds.Files;
-numTotal = length(ds.Files);
-numTrain = floor(dataUsageForTrain * numTotal);
-numTest = numTotal - numTrain;
+numTrain = length(dataset.trainSet);
+numTest = length(dataset.testSet);
+numTotal = numTrain + numTest;
 
-indTrain = randperm(numTotal,numTrain);
-indTest = setdiff(1:numTotal,indTrain);
-indTest = indTest(randperm(length(indTest)));
 % Load train / test data from data store
 
+YTrain = cell([numTrain,1]);
+YTest = cell([numTest,1]);
 
-Y = categorical(contains(ds.Files,'accepted')); % label for each trace
-Y2 = categorical(contains(ds.Files,'simulated'));
 
-for i = 1 : numTotal
-    if any(indTrain == i)
-        if (Y(i) == "false") && (rand() < rejectedDropRate)
-            indTrain(indTrain == i) = -1;
-        end
-    elseif any(indTest == i)
-        if (Y(i) == "false") && (rand() < rejectedDropRate)
-            indTest(indTest == i) = -1;
-        elseif Y2(i) == "true"
-            indTest(indTest == i) = -1;
-            if any(indTrain == -1)
-                idx = find(indTrain == -1, 1);
-                indTrain(idx) = i;
-            end
-        end
-    end
-end
-
-indTrain = indTrain(indTrain > 0);
-indTest = indTest(indTest > 0);
-
-YTrain = cell([length(indTrain),1]);
-YTest = cell([length(indTest),1]);
-
-XTrain = cell([length(indTrain),1]);
-XTest = cell([length(indTest),1]);
-
-FileTrain = cell([length(indTrain),1]);
-FileTest = cell([length(indTest),1]);
+XTrain = cell([numTrain,1]);
+XTest = cell([numTest,1]);
 
 iTrain = 1;
 iTest = 1;
 
-userMsg = waitbar(0,'Reading serial data','Name','Reading serial data');
+userMsg = waitbar(0,'Reading image data','Name','Reading image data');
 
-for i = 1 : numTotal
-    [data, info] = read(ds);
+for i = 1 : numTrain
+    data = read(fullfile(dataset.serialFolder, strcat(dataset.trainSet{i},dataset.serialFormat)));
     data = data.data;
     normFactor = 1 / max([conv(data(1,:),[1/3,1/3,1/3],'same')+conv(data(2,:),[1/3,1/3,1/3],'same')]);
     label = any(reshape(data(3,1:end-mod(end,numStack)), numStack, []));
@@ -96,37 +65,41 @@ for i = 1 : numTotal
         reshape(data(1,1:end-mod(end,numStack)),numStack,[]);
         reshape(data(2,1:end-mod(end,numStack)),numStack,[])
         ];
-    if any(indTrain == i)
-        XTrain{iTrain} = data;
-        YTrain{iTrain} = categorical(label, [1, 0]);
-        FileTrain{iTrain} = info.Filename;
-        iTrain = iTrain + 1;
-    elseif any(indTest == i)
-        XTest{iTest} = data;
-        YTest{iTest} = categorical(label, [1, 0]);
-        FileTest{iTest} = info.Filename;
-        iTest = iTest + 1;
-    end
+    XTrain{iTrain} = data;
+    YTrain{iTrain} = categorical(label, [1, 0]);
+    iTrain = iTrain + 1;
     waitbar(i / numTotal,userMsg);
 end
 
-idx = randperm(length(YTrain));
-XTrain = XTrain(idx);
-YTrain = YTrain(idx);
-sequenceLengths = cellfun(@(X) size(X,2), XTrain);
-[~, idx] = sort(sequenceLengths);
-XTrain = XTrain(idx);
-YTrain = YTrain(idx);
-
-idx = randperm(length(YTest));
-XTest = XTest(idx);
-YTest = YTest(idx);
-sequenceLengths = cellfun(@(X) size(X,2), XTest);
-[~, idx] = sort(sequenceLengths);
-XTest = XTest(idx);
-YTest = YTest(idx);
+for i = 1 : numTest
+    data = read(fullfile(dataset.serialFolder, strcat(dataset.testSet{i},dataset.serialFormat)));
+    data = data.data;
+    data(1,:) = conv(data(1,:),[1/3,1/3,1/3],'same');
+    data(2,:) = conv(data(2,:),[1/3,1/3,1/3],'same');
+    normFactor = 1 / max(data(:));
+    data = normFactor * [
+        reshape(data(1,1:end-mod(end,numStack)),numStack,[]);
+        reshape(data(2,1:end-mod(end,numStack)),numStack,[])
+        ];
+    XTest{iTest} = data;
+    YTest{iTest} = categorical(label, [1, 0]);
+    iTest = iTest + 1;
+    waitbar((numTrain + i) / numTotal,userMsg);
+end
 
 close(userMsg);
+
+
+% sequenceLengths = cellfun(@(X) size(X,2), XTrain);
+% [~, idx] = sort(sequenceLengths);
+% XTrain = XTrain(idx);
+% YTrain = YTrain(idx);
+% 
+% sequenceLengths = cellfun(@(X) size(X,2), XTest);
+% [~, idx] = sort(sequenceLengths);
+% XTest = XTest(idx);
+% YTest = YTest(idx);
+
 %% Setup net
 
 rnnLayers = [
