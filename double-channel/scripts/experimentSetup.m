@@ -57,6 +57,8 @@ disp(["test ", sum(contains(testSet, 'accepted')),sum(contains(testSet, 'rejecte
 
 %% 
 outputPath = "../experiments/experiment1/";
+serialFolder = "../data/serial";
+imgFolder = '../data/images-alpha/';
 serialFormat = ".mat";
 imgFormat = ".jpg";
 save(fullfile(outputPath, "fileNames.mat"),"testSet","trainSet","serialFolder","imgFolder","serialFormat","imgFormat");
