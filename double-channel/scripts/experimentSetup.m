@@ -6,7 +6,7 @@ files = dir(fullfile(serialFolder,pattern));
 %%
 
 trainRatio = 0.8;
-dropRatioW = 0.5;
+dropRatioW = 0.8;
 
 %% 
 trainSet = {};
@@ -36,7 +36,7 @@ for i = 1 : length(files)
     end
     
     if (folder == "rejected")
-        if regexp(rawName,"W\d_") 
+        if regexp(rawName,"W\d_.+") == 1
             if (rand() < dropRatioW)
                 continue;
             end
@@ -49,6 +49,11 @@ for i = 1 : length(files)
     end
 end
 
+%% DISPLAY RESULTS
+disp("==================================================================")
+disp(["     "      ,"accepted"      ,"rejected"       ,"simulated"])
+disp(["train", sum(contains(trainSet, 'accepted')),sum(contains(trainSet, 'rejected')),sum(contains(trainSet, 'simulated'))])
+disp(["test ", sum(contains(testSet, 'accepted')),sum(contains(testSet, 'rejected')),sum(contains(testSet, 'simulated'))])
 
 %% 
 outputPath = "../experiments/experiment1/";
