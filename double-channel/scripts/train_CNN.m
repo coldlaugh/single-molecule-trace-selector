@@ -63,8 +63,8 @@ end
 
 for i = 1 : numTest
     data = read(fullfile(dataset.imgFolder, strcat(dataset.testSet{i},dataset.imgFormat)));
-    XTrain(:,:,:,iTest) = data;
-    YTrain(iTest) = ~contains(dataset.testSet{i},'rejected');
+    XTest(:,:,:,iTest) = data;
+    YTest(iTest) = ~contains(dataset.testSet{i},'rejected');
     iTest = iTest + 1;
     waitbar((numTrain + i) / numTotal,userMsg);
 end
@@ -78,7 +78,7 @@ close(userMsg);
 endLayers = [
     fullyConnectedLayer(numClasses,'Name','fc','WeightLearnRateFactor',10,'BiasLearnRateFactor',10)
     softmaxLayer('Name','softmax')
-    weightedClassificationLayer('classification',[1,1])
+    weightedClassificationLayer('classification',[1,2])
     ];
 
 cnnLayers = [
@@ -116,7 +116,7 @@ options = trainingOptions(...
     'ExecutionEnvironment',computeEnv,...
     'Plots','training-progress',...
     'ValidationData',{XTest,YTest},...
-    'ValidationFrequency',floor(length(indTrain) / batchSize * 2),...
+    'ValidationFrequency',floor(numTrain / batchSize * 2),...
     'ValidationPatience',20,...
     'CheckpointPath',''...
 );
@@ -125,7 +125,7 @@ options = trainingOptions(...
 
 [cnnNet,info] = trainNetwork(XTrain,YTrain,cnnLayers,options);
 cnnLayers = cnnNet.Layers;
-save(fullfile(netFolder, netOutput),'cnnNet','indTest','indTrain','info');
+save(fullfile(netFolder, netOutput),'cnnNet','info');
 
 %% classify using CNN
 [pred, score] =classify(cnnNet, XTest, 'ExecutionEnvironment', computeEnv, 'MiniBatchSize', batchSize);
