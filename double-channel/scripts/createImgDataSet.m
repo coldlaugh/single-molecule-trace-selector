@@ -21,6 +21,9 @@ parfor i = 1 : length(files)
         else
             outputPath = strcat(outputDir,'rejected/');
         end
+        if ~exist(outputPath, 'dir')
+            mkdir(outputPath);
+        end
         trace2img([trace.donor(j,:)', trace.acceptor(j,:)'],fullfile(outputPath,strcat(rawName,'-',num2str(j),'.jpg')));
     end
 end
