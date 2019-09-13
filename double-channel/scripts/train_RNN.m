@@ -15,7 +15,7 @@ checkpointFolder = '../net/rnn/checkpoint/';
 checkpointFreq = 10;
 
 maxTrainEpochs = 100;
-batchSize = 600;
+batchSize = 200;
 algo = 'adam';
 learningRate = 0.005;
 L2Reg = 0.00001;
@@ -101,8 +101,6 @@ close(userMsg);
 
 rnnLayers = [
     sequenceInputLayer(2 * numStack)
-    bilstmLayer(numHiddenUnits, 'OutputMode', 'sequence')
-    bilstmLayer(numHiddenUnits, 'OutputMode', 'sequence')
     bilstmLayer(numHiddenUnits, 'OutputMode', 'last')
     fullyConnectedLayer(floor(numHiddenUnits/4),'WeightLearnRateFactor', 2, 'BiasLearnRateFactor', 2)
     reluLayer
@@ -123,7 +121,7 @@ options = trainingOptions(...
     'ValidationData',{XTest,YTest},...
     'ValidationFrequency',floor(numTrain/ batchSize * 2),...
     'ValidationPatience',20,...
-    'SequenceLength','longest',...
+    'SequenceLength','shortest',...
     'SequencePaddingValue', 0,...
     'CheckpointPath',''...
 );
