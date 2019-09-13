@@ -1,5 +1,5 @@
 %% Setting up constants. 
-baseNet = alexnet;
+% baseNet = alexnet;
 numClasses = 2;
 inputSize = [32,32,3];
 
@@ -9,8 +9,8 @@ else
     computeEnv = 'cpu';
 end
 
-dataFolder = '../data/images-alpha/';
-dataSubFolders = {'accepted','rejected','accepted-simulated-filtered'};
+
+expt = '../experiments/experiment1/fileNames.mat';
 checkpointFolder = '../net/cnn/checkpoint/';
 checkpointFreq = 10;
 
@@ -20,8 +20,6 @@ algo = 'adam';
 learningRate = 0.0005;
 L2Reg = 0.00001;
 WeightsInitializer = 'glorot';
-dataUsageForTrain = 0.8;
-rejectedDropRate = 0.0;
 
 netFolder = '../net/cnn/';
 netOutput = 'cnn-alexnet.mat';
@@ -30,84 +28,50 @@ netOutput = 'cnn-alexnet.mat';
 [~,~] = mkdir(checkpointFolder);
 [~,~] = mkdir(netFolder);
 
-%% Setup data store
+%% Setup data set
 
-ds = fileDatastore(fullfile(dataFolder,dataSubFolders),'IncludeSubfolders',true, 'FileExtensions', '.jpg',...
-    'ReadFcn',@(loc)(imresize(imread(loc),inputSize(1:2))));
+dataset = load(expt,'-mat');
+read = @(loc)(imresize(imread(loc),inputSize(1:2)));
 
 % Devide test and train set
 
-numTotal = length(ds.Files);
-numTrain = floor(dataUsageForTrain * numTotal);
-numTest = numTotal - numTrain;
+numTrain = length(dataset.trainSet);
+numTest = length(dataset.testSet);
+numTotal = numTrain + numTest;
 
-indTrain = randperm(numTotal,numTrain);
-indTest = setdiff(1:numTotal,indTrain);
-indTest = indTest(randperm(length(indTest)));
 % Load train / test data from data store
 
-
-Y = categorical(contains(ds.Files,'accepted')); % label for each trace
-Y2 = categorical(contains(ds.Files,'simulated'));
-
-for i = 1 : numTotal
-    if any(indTrain == i)
-        if (Y(i) == "false") && (rand() < rejectedDropRate)
-            indTrain(indTrain == i) = -1;
-        end
-    elseif any(indTest == i)
-        if (Y(i) == "false") && (rand() < rejectedDropRate)
-            indTest(indTest == i) = -1;
-        elseif Y2(i) == "true"
-            indTest(indTest == i) = -1;
-        end
-    end
-end
-
-indTrain = indTrain(indTrain > 0);
-indTest = indTest(indTest > 0);
-
-YTrain = zeros([length(indTrain),1]);
-YTest = zeros([length(indTest),1]);
+YTrain = zeros([numTrain,1]);
+YTest = zeros([numTest,1]);
 
 
-XTrain = zeros([inputSize,length(indTrain)]);
-XTest = zeros([inputSize,length(indTest)]);
-
-FileTrain = cell([length(indTrain),1]);
-FileTest = cell([length(indTest),1]);
+XTrain = zeros([inputSize,numTrain]);
+XTest = zeros([inputSize,numTest]);
 
 iTrain = 1;
 iTest = 1;
 
 userMsg = waitbar(0,'Reading image data','Name','Reading image data');
 
-for i = 1 : numTotal
-    [data, info] = read(ds);
-    if contains(info.Filename, 'HaMMy')
-        continue;
-    end
-    if any(indTrain == i)
-        XTrain(:,:,:,iTrain) = data;
-        YTrain(iTrain) = contains(info.Filename,'accepted');
-        FileTrain{iTrain} = info.Filename;
-        iTrain = iTrain + 1;
-    elseif any(indTest == i)
-        XTest(:,:,:,iTest) = data;
-        YTest(iTest) = contains(info.Filename,'accepted');
-        FileTest{iTest} = info.Filename;
-        iTest = iTest + 1;
-    end
+for i = 1 : numTrain
+    data = read(fullfile(dataset.imgFolder, strcat(dataset.trainSet{i},dataset.imgFormat)));
+    XTrain(:,:,:,iTrain) = data;
+    YTrain(iTrain) = ~contains(dataset.trainSet{i},'rejected');
+    iTrain = iTrain + 1;
     waitbar(i / numTotal,userMsg);
 end
-% XTest = XTest / 255.0;
-% XTrain = XTrain / 255.0;
+
+for i = 1 : numTest
+    data = read(fullfile(dataset.imgFolder, strcat(dataset.testSet{i},dataset.imgFormat)));
+    XTrain(:,:,:,iTest) = data;
+    YTrain(iTest) = ~contains(dataset.testSet{i},'rejected');
+    iTest = iTest + 1;
+    waitbar((numTrain + i) / numTotal,userMsg);
+end
+
 YTrain = categorical(YTrain, [1, 0]);
 YTest = categorical(YTest, [1, 0]);
-indPerm = randperm(length(YTest));
-XTest = XTest(:,:,:,indPerm);
-YTest = categorical(YTest(indPerm));
-FileTest = FileTest(indPerm);
+
 close(userMsg);
 %% Setup net
 
