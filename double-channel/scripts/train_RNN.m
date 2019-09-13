@@ -10,8 +10,7 @@ else
     computeEnv = 'cpu';
 end
 
-dataFolder = '../data/serial';
-dataSubFolders = {'accepted','rejected'};
+expt = '../experiments/experiment1/fileNames.mat';
 checkpointFolder = '../net/rnn/checkpoint/';
 checkpointFreq = 10;
 
@@ -33,58 +32,32 @@ netOutput = 'rnn-LSTM.mat';
 
 %% Setup data store
 
-ds = fileDatastore(fullfile(dataFolder,dataSubFolders),'IncludeSubfolders',true, 'FileExtensions', '.mat',...
-    'ReadFcn',@(loc)load(loc,'data'));
+
+dataset = load(expt,'-mat');
+read = @(loc)load(loc,'data');
 
 % Devide test and train set
 
-numTotal = length(ds.Files);
-numTrain = floor(dataUsageForTrain * numTotal);
-numTest = numTotal - numTrain;
+numTrain = length(dataset.trainSet);
+numTest = length(dataset.testSet);
+numTotal = numTrain + numTest;
 
-indTrain = randperm(numTotal,numTrain);
-indTest = setdiff(1:numTotal,indTrain);
-indTest = indTest(randperm(length(indTest)));
 % Load train / test data from data store
 
-
-Y = categorical(contains(ds.Files,'accepted')); % label for each trace
-Y2 = categorical(contains(ds.Files,'simulated'));
-
-for i = 1 : numTotal
-    if any(indTrain == i)
-        if (Y(i) == "false") && (rand() < rejectedDropRate)
-            indTrain(indTrain == i) = -1;
-        end
-    elseif any(indTest == i)
-        if (Y(i) == "false") && (rand() < rejectedDropRate)
-            indTest(indTest == i) = -1;
-        elseif Y2(i) == "true"
-            indTest(indTest == i) = -1;
-        end
-    end
-end
-
-indTrain = indTrain(indTrain > 0);
-indTest = indTest(indTest > 0);
-
-YTrain = zeros([length(indTrain),1]);
-YTest = zeros([length(indTest),1]);
+YTrain = zeros([numTrain,1]);
+YTest = zeros([numTest,1]);
 
 
-XTrain = cell([length(indTrain),1]);
-XTest = cell([length(indTest),1]);
-
-FileTrain = cell([length(indTrain),1]);
-FileTest = cell([length(indTest),1]);
+XTrain = cell([numTrain,1]);
+XTest = cell([numTest,1]);
 
 iTrain = 1;
 iTest = 1;
 
-userMsg = waitbar(0,'Reading serial data','Name','Reading serial data');
+userMsg = waitbar(0,'Reading image data','Name','Reading image data');
 
-for i = 1 : numTotal
-    [data, info] = read(ds);
+for i = 1 : numTrain
+    data = read(fullfile(dataset.serialFolder, strcat(dataset.trainSet{i},dataset.serialFormat)));
     data = data.data;
     data(1,:) = conv(data(1,:),[1/3,1/3,1/3],'same');
     data(2,:) = conv(data(2,:),[1/3,1/3,1/3],'same');
@@ -93,39 +66,39 @@ for i = 1 : numTotal
         reshape(data(1,1:end-mod(end,numStack)),numStack,[]);
         reshape(data(2,1:end-mod(end,numStack)),numStack,[])
         ];
-    if any(indTrain == i)
-        XTrain{iTrain} = data;
-        YTrain(iTrain) = contains(info.Filename,'accepted');
-        FileTrain{iTrain} = info.Filename;
-        iTrain = iTrain + 1;
-    elseif any(indTest == i)
-        XTest{iTest} = data;
-        YTest(iTest) = contains(info.Filename,'accepted');
-        FileTest{iTest} = info.Filename;
-        iTest = iTest + 1;
-    end
+    XTrain{iTrain} = data;
+    YTrain(iTrain) = ~contains(dataset.trainSet{i},'rejected');
+    iTrain = iTrain + 1;
     waitbar(i / numTotal,userMsg);
 end
+
+for i = 1 : numTest
+    data = read(fullfile(dataset.serialFolder, strcat(dataset.testSet{i},dataset.serialFormat)));
+    data = data.data;
+    data(1,:) = conv(data(1,:),[1/3,1/3,1/3],'same');
+    data(2,:) = conv(data(2,:),[1/3,1/3,1/3],'same');
+    normFactor = 1 / max(data(:));
+    data = normFactor * [
+        reshape(data(1,1:end-mod(end,numStack)),numStack,[]);
+        reshape(data(2,1:end-mod(end,numStack)),numStack,[])
+        ];
+    XTest{iTest} = data;
+    YTest(iTest) = ~contains(dataset.testSet{i},'rejected');
+    iTest = iTest + 1;
+    waitbar((numTrain + i) / numTotal,userMsg);
+end
+
 YTrain = categorical(YTrain, [1, 0]);
 YTest = categorical(YTest, [1, 0]);
 
-idx = randperm(length(YTrain));
-XTrain = XTrain(idx);
-YTrain = categorical(YTrain(idx));
-sequenceLengths = cellfun(@(X) size(X,2), XTrain);
-[~, idx] = sort(sequenceLengths);
-XTrain = XTrain(idx);
-YTrain = categorical(YTrain(idx));
-
-idx = randperm(length(YTest));
-XTest = XTest(idx);
-YTest = categorical(YTest(idx));
-sequenceLengths = cellfun(@(X) size(X,2), XTest);
-[~, idx] = sort(sequenceLengths);
-XTest = XTest(idx);
-YTest = categorical(YTest(idx));
-
 close(userMsg);
+
+% sequenceLengths = cellfun(@(X) size(X,2), XTest);
+% [~, idx] = sort(sequenceLengths);
+% XTest = XTest(idx);
+% YTest = categorical(YTest(idx));
+% 
+% close(userMsg);
 %% Setup net
 
 rnnLayers = [
