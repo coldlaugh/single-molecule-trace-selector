@@ -78,7 +78,7 @@ close(userMsg);
 endLayers = [
     fullyConnectedLayer(numClasses,'Name','fc','WeightLearnRateFactor',10,'BiasLearnRateFactor',10)
     softmaxLayer('Name','softmax')
-    weightedClassificationLayer('classification',[1,2])
+    weightedClassificationLayer('classification',[1,1])
     ];
 
 cnnLayers = [
