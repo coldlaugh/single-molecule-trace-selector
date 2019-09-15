@@ -56,7 +56,10 @@ disp(["train", sum(contains(trainSet, 'accepted')),sum(contains(trainSet, 'rejec
 disp(["test ", sum(contains(testSet, 'accepted')),sum(contains(testSet, 'rejected')),sum(contains(testSet, 'simulated'))])
 
 %% 
-outputPath = "../experiments/experiment1/";
+outputPath = "../experiments/experiment2/";
+if ~exist(outputPath, 'dir')
+    mkdir(outputPath);
+end
 serialFolder = "../data/serial";
 imgFolder = '../data/images-alpha/';
 serialFormat = ".mat";
