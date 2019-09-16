@@ -1,5 +1,6 @@
+function train_CNN_func(exptFolder)
 %% Setting up constants. 
-baseNet = alexnet;
+% baseNet = alexnet;
 numClasses = 2;
 inputSize = [32,32,3];
 
@@ -10,7 +11,8 @@ else
 end
 
 
-expt = '../experiments/experiment1-1/fileNames.mat';
+
+expt = fullfile(exptFolder,'fileNames.mat');
 checkpointFolder = '../net/cnn/checkpoint/';
 checkpointFreq = 10;
 
@@ -21,7 +23,7 @@ learningRate = 0.0005;
 L2Reg = 0.00001;
 WeightsInitializer = 'glorot';
 
-netFolder = '../experiments/experiment1-1/';
+netFolder = exptFolder;
 netOutput = 'cnn-alexnet.mat';
 
 assert(contains(expt, netFolder),strcat(...
@@ -86,35 +88,29 @@ endLayers = [
     ];
 
 cnnLayers = [
-    upsampleLayer()
-    baseNet.Layers(2:end-3)
+    imageInputLayer(inputSize,'normalization','zerocenter')
+%     upsampleLayer()
+%     baseNet.Layers(2:end-3)
+    convolution2dLayer(5,10,'Padding','same','WeightsInitializer',WeightsInitializer)
+    batchNormalizationLayer
+    maxPooling2dLayer(3,'Stride',2)
+    reluLayer
+    
+    dropoutLayer
+    
+    convolution2dLayer(3,10,'Padding','same','WeightsInitializer',WeightsInitializer)
+    maxPooling2dLayer(3,'Stride',2)
+    reluLayer
+    convolution2dLayer(3,10,'Padding','same','WeightsInitializer',WeightsInitializer)
+    reluLayer
+    convolution2dLayer(3,10,'Padding','same','WeightsInitializer',WeightsInitializer)
+    maxPooling2dLayer(3,'Stride',2)
+    reluLayer
+    
+    fullyConnectedLayer(10,'WeightsInitializer',WeightsInitializer,'WeightLearnRateFactor',5,'BiasLearnRateFactor',5)
+    reluLayer
     endLayers
     ];
-% 
-% cnnLayers = [
-%     imageInputLayer(inputSize,'normalization','zerocenter')
-% %     upsampleLayer()
-% %     baseNet.Layers(2:end-3)
-%     convolution2dLayer(5,10,'Padding','same','WeightsInitializer',WeightsInitializer)
-%     batchNormalizationLayer
-%     maxPooling2dLayer(3,'Stride',2)
-%     reluLayer
-%     
-%     dropoutLayer
-%     
-%     convolution2dLayer(3,10,'Padding','same','WeightsInitializer',WeightsInitializer)
-%     maxPooling2dLayer(3,'Stride',2)
-%     reluLayer
-%     convolution2dLayer(3,10,'Padding','same','WeightsInitializer',WeightsInitializer)
-%     reluLayer
-%     convolution2dLayer(3,10,'Padding','same','WeightsInitializer',WeightsInitializer)
-%     maxPooling2dLayer(3,'Stride',2)
-%     reluLayer
-%     
-%     fullyConnectedLayer(10,'WeightsInitializer',WeightsInitializer,'WeightLearnRateFactor',5,'BiasLearnRateFactor',5)
-%     reluLayer
-%     endLayers
-%     ];
 
 options = trainingOptions(...
      algo,...

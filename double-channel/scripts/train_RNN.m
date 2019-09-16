@@ -10,7 +10,7 @@ else
     computeEnv = 'cpu';
 end
 
-expt = '../experiments/experiment2-5/fileNames.mat';
+expt = '../experiments/experiment2-10/fileNames.mat';
 checkpointFolder = '../net/rnn/checkpoint/';
 checkpointFreq = 10;
 
@@ -21,7 +21,7 @@ learningRate = 0.005;
 L2Reg = 0.00001;
 WeightsInitializer = 'glorot';
 
-netFolder = '../experiments/experiment2-5/';
+netFolder = '../experiments/experiment2-10/';
 netOutput = 'rnn-LSTM.mat';
 
 assert(contains(expt, netFolder),strcat(...
@@ -140,7 +140,7 @@ plotconfusion(YTest, pred);
 
 
 %% Showing acc curve
-figure(1);clf;hold on;
+figure(2);clf;hold on;
 for x = 0 : 0.01 : 1
     acc = sum((score(:,1) > x & YTest == "1")) + sum((score(:,1) < x & YTest == "0"));
     acc = acc / length(pred);
