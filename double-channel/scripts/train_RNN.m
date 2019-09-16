@@ -10,12 +10,12 @@ else
     computeEnv = 'cpu';
 end
 
-expt = '../experiments/experiment1/fileNames.mat';
+expt = '../experiments/experiment1-1/fileNames.mat';
 checkpointFolder = '../net/rnn/checkpoint/';
 checkpointFreq = 10;
 
 maxTrainEpochs = 100;
-batchSize = 200;
+batchSize = 500;
 algo = 'adam';
 learningRate = 0.005;
 L2Reg = 0.00001;
