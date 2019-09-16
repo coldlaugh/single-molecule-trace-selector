@@ -17,18 +17,23 @@
 | Optimization method | ADAM |
 | Learning rate | 0.0001 |
 | Training Patience | 5 |
-| param. initializer | GLOROT |
+| Param. initializer | GLOROT |
 
 * Testing results
 
 | Expt | Sensitivity | Specificity | Precision | Concordance |
 | ---- | ----------- | ----------- | ----------- | ----------- |
 | 1-1  | 99.9% | 99.9% | 99.9% | 99.9% | 
-| Average | 80% | 96% | 90.5% | 
+| Average | 80% | 96% | 90.5% |  99.9% | 
 
-| Expt | Sensitivity | Specificity | Concordance |
-| ---- | ----------- | ----------- | ----------- |
-| 2-1  | 99.9%       | 99.9%       | 99.9%       |
-| Average | 80% | 96% | 90.5% | 90.0 |
+| Expt | Sensitivity | Specificity | Precision | Concordance |
+| ---- | ----------- | ----------- | ----------- | ----------- |
+| 2-1  | 99.9% | 99.9% | 99.9% | 99.9% | 
+| Average | 80% | 96% | 90.5% |  99.9% | 
+
 ## AlexNet
+
+## Recursive Neural Net - LSTM
+
+## Trace Segmentation - LSTM
 
