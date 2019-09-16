@@ -10,7 +10,7 @@ else
     computeEnv = 'cpu';
 end
 
-expt = '../experiments/experiment1-1/fileNames.mat';
+expt = '../experiments/experiment2/fileNames.mat';
 checkpointFolder = '../net/rnn/checkpoint/';
 checkpointFreq = 10;
 
@@ -23,7 +23,7 @@ WeightsInitializer = 'glorot';
 dataUsageForTrain = 0.8;
 rejectedDropRate = 0.5;
 
-netFolder = '../experiments/experiment1/';
+netFolder = '../experiments/experiment2/';
 netOutput = 'rnn-LSTM.mat';
 
 %%  setup folders
