@@ -10,12 +10,12 @@ else
     computeEnv = 'cpu';
 end
 
-expt = '../experiments/experiment1/fileNames.mat';
+expt = '../experiments/experiment2/fileNames.mat';
 checkpointFolder = '../net/rnn/checkpoint/';
 checkpointFreq = 10;
 
 maxTrainEpochs = 100;
-batchSize = 200;
+batchSize = 500;
 algo = 'adam';
 learningRate = 0.005;
 L2Reg = 0.00001;
@@ -23,7 +23,7 @@ WeightsInitializer = 'glorot';
 dataUsageForTrain = 0.8;
 rejectedDropRate = 0.5;
 
-netFolder = '../experiments/experiment1/';
+netFolder = '../experiments/experiment2/';
 netOutput = 'rnn-LSTM.mat';
 
 %%  setup folders

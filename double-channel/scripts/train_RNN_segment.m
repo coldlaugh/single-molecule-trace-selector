@@ -10,12 +10,12 @@ else
     computeEnv = 'cpu';
 end
 
-expt = '../experiments/experiment1/fileNames.mat';
+expt = '../experiments/experiment2/fileNames.mat';
 checkpointFolder = '../net/rnn/checkpoint/';
 checkpointFreq = 10;
 
 maxTrainEpochs = 100;
-batchSize = 600;
+batchSize = 300;
 algo = 'adam';
 learningRate = 0.0001;
 L2Reg = 0.00001;
@@ -74,9 +74,8 @@ end
 for i = 1 : numTest
     data = read(fullfile(dataset.serialFolder, strcat(dataset.testSet{i},dataset.serialFormat)));
     data = data.data;
-    data(1,:) = conv(data(1,:),[1/3,1/3,1/3],'same');
-    data(2,:) = conv(data(2,:),[1/3,1/3,1/3],'same');
-    normFactor = 1 / max(data(:));
+    normFactor = 1 / max([conv(data(1,:),[1/3,1/3,1/3],'same')+conv(data(2,:),[1/3,1/3,1/3],'same')]);
+    label = any(reshape(data(3,1:end-mod(end,numStack)), numStack, []));
     data = normFactor * [
         reshape(data(1,1:end-mod(end,numStack)),numStack,[]);
         reshape(data(2,1:end-mod(end,numStack)),numStack,[])
@@ -105,7 +104,7 @@ close(userMsg);
 rnnLayers = [
     sequenceInputLayer(2 * numStack)
     bilstmLayer(numHiddenUnits, 'OutputMode', 'sequence')
-    bilstmLayer(numHiddenUnits, 'OutputMode', 'sequence')
+%     bilstmLayer(numHiddenUnits, 'OutputMode', 'sequence')
     bilstmLayer(numHiddenUnits, 'OutputMode', 'sequence')
     fullyConnectedLayer(floor(numHiddenUnits/4),'WeightLearnRateFactor', 2, 'BiasLearnRateFactor', 2)
     reluLayer
