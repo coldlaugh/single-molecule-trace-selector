@@ -31,6 +31,8 @@
 | 2-1  | 99.9% | 99.9% | 99.9% | 99.9% | 
 | Average | 80% | 96% | 90.5% |  99.9% | 
 
+Average training time: 
+
 ## AlexNet
 
 ## Recursive Neural Net - LSTM
