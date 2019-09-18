@@ -90,13 +90,13 @@ for expt = 1 : 10
     for condition = 1 : 2
         exptFolder = strcat('../experiments/experiment',num2str(condition),'-',num2str(expt),'/');
         userMsg = waitbar(0,strcat('Testing rnn LSTM in ', exptFolder),'Name','Test');
-        netFile = fullfile(exptFolder, "rnn-LSTM.mat");
+        netFile = fullfile(exptFolder, "rnn-LSTM-segment.mat");
         nameFile = fullfile(exptFolder, "fileNames.mat");
         dump = load(netFile, '-mat');
         rnnNet = dump.rnnNet;
         dataset = load(nameFile, '-mat');
-        testLabel = zeros(length(dataset.testSet),1);
-        testScore = zeros(length(dataset.testSet),1);
+        testLabel = cell(length(dataset.testSet),1);
+        testScore = cell(length(dataset.testSet),1);
         for i = 1 : length(dataset.testSet)
             data = read(fullfile(dataset.serialFolder, strcat(dataset.testSet{i},dataset.serialFormat)));
             data = data.data;
@@ -106,12 +106,13 @@ for expt = 1 : 10
                 reshape(data(2,1:end-mod(end,numStack)),numStack,[])
                 ];
             [pred, score] = classify(rnnNet, data, 'ExecutionEnvironment', computeEnv);
-            testLabel(i) = (pred == "1");
-            testScore(i) = score(1);
+            testLabel{i} = (pred == "1");
+            testScore{i} = score(1,:);
             waitbar(i / length(dataset.testSet), userMsg);
+            pause;
         end
-        saveFile = fullfile(exptFolder, "test-rnn-lstm.mat");
-        save(saveFile, 'testLabel', 'testScore');
+        saveFile = fullfile(exptFolder, "test-rnn-lstm-segment.mat");
+        save(saveFile, 'testLabel', 'testScore', 'numStack');
         close(userMsg);
     end
 end
