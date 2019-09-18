@@ -26,7 +26,7 @@ for expt = 1 : 10
         testLabel = zeros(length(dataset.testSet),1);
         testScore = zeros(length(dataset.testSet),1);
         for i = 1 : length(dataset.testSet)
-            img = read(fullfile(dataset.imgFolder, strcat(dataset.trainSet{i},dataset.imgFormat)));
+            img = read(fullfile(dataset.imgFolder, strcat(dataset.testSet{i},dataset.imgFormat)));
             [pred, score] =classify(cnnNet, img, 'ExecutionEnvironment', computeEnv);
             testLabel(i) = (pred == "1");
             testScore(i) = score(1);
@@ -59,7 +59,7 @@ for expt = 1 : 10
         testLabel = zeros(length(dataset.testSet),1);
         testScore = zeros(length(dataset.testSet),1);
         for i = 1 : length(dataset.testSet)
-            data = read(fullfile(dataset.serialFolder, strcat(dataset.trainSet{i},dataset.serialFormat)));
+            data = read(fullfile(dataset.serialFolder, strcat(dataset.testSet{i},dataset.serialFormat)));
             data = data.data;
             normFactor = 1 / max([conv(data(1,:),[1/3,1/3,1/3],'same')+conv(data(2,:),[1/3,1/3,1/3],'same')]);
             data = normFactor * [
