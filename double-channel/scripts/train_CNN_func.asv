@@ -1,5 +1,6 @@
+function train_CNN_func(exptFolder)
 %% Setting up constants. 
-baseNet = alexnet;
+% baseNet = alexnet;
 numClasses = 2;
 inputSize = [32,32,3];
 
@@ -10,19 +11,20 @@ else
 end
 
 
-expt = '../experiments/experiment1-1/fileNames.mat';
+
+expt = fullfile(exptFolder,'fileNames.mat');
 checkpointFolder = '../net/cnn/checkpoint/';
 checkpointFreq = 10;
 
-maxTrainEpochs = 100;
-batchSize = 500;
+maxTrainEpochs = 500;
+batchSize = 100;
 algo = 'adam';
 learningRate = 0.001;
 L2Reg = 0.00001;
 WeightsInitializer = 'glorot';
 
-netFolder = '../experiments/experiment1-1/';
-netOutput = 'cnn-simple.mat';
+netFolder = fullfile(exptFolder);
+netOutput = 'cnn-alexn.mat';
 
 assert(contains(expt, netFolder),strcat(...
     "Error: Experiment folder ", expt, ...
@@ -85,13 +87,6 @@ endLayers = [
     weightedClassificationLayer('classification',[1,1])
     ];
 
-% cnnLayers = [
-%     imageInputLayer(inputSize,'normalization','zerocenter')
-%     upsampleLayer()
-%     baseNet.Layers(2:end-3)
-%     endLayers
-%     ];
-
 cnnLayers = [
     imageInputLayer(inputSize,'normalization','zerocenter')
     convolution2dLayer(5,50,'Padding','same','WeightsInitializer',WeightsInitializer)
@@ -126,7 +121,7 @@ options = trainingOptions(...
     'Plots','training-progress',...
     'ValidationData',{XTest,YTest},...
     'ValidationFrequency',floor(numTrain / batchSize * 2),...
-    'ValidationPatience',5,...
+    'ValidationPatience',20,...
     'CheckpointPath',''...
 );
 

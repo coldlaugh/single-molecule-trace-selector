@@ -1,3 +1,4 @@
+function train_RNN_segment_func(exptFolder)
 %% Setting up constants. 
 
 numClasses = 2;
@@ -10,12 +11,12 @@ else
     computeEnv = 'cpu';
 end
 
-expt = '../experiments/experiment1-1/fileNames.mat';
+expt = fullfile(exptFolder,'fileNames.mat');
 checkpointFolder = '../net/rnn/checkpoint/';
 checkpointFreq = 10;
 
 maxTrainEpochs = 100;
-batchSize = 50;
+batchSize = 500;
 algo = 'adam';
 learningRate = 0.0001;
 L2Reg = 0.00001;
@@ -23,8 +24,12 @@ WeightsInitializer = 'glorot';
 dataUsageForTrain = 0.8;
 rejectedDropRate = 0.0;
 
-netFolder = '../experiments/experiment1-1/';
+netFolder = fullfile(exptFolder);
 netOutput = 'rnn-LSTM-segment.mat';
+
+assert(contains(expt, netFolder),strcat(...
+    "Error: Experiment folder ", expt, ...
+    " does not match net output folder ", netFolder))
 
 %%  setup folders
 [~,~] = mkdir(checkpointFolder);
@@ -110,7 +115,7 @@ rnnLayers = [
     reluLayer
     fullyConnectedLayer(numClasses,'WeightLearnRateFactor', 10, 'BiasLearnRateFactor', 10)
     softmaxLayer
-    weightedSerialClassificationLayer('layer',[5,1])
+    weightedSerialClassificationLayer('layer',[2,1])
     ];
 
 options = trainingOptions(...
