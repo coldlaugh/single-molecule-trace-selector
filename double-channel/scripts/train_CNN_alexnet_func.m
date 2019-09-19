@@ -19,7 +19,7 @@ checkpointFreq = 10;
 maxTrainEpochs = 100;
 batchSize = 500;
 algo = 'adam';
-learningRate = 0.001;
+learningRate = 0.0001;
 L2Reg = 0.00001;
 WeightsInitializer = 'glorot';
 
