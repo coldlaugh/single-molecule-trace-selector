@@ -109,7 +109,6 @@ for expt = 1 : 10
             testLabel{i} = (pred == "1");
             testScore{i} = score(1,:);
             waitbar(i / length(dataset.testSet), userMsg);
-            pause;
         end
         saveFile = fullfile(exptFolder, "test-rnn-lstm-segment.mat");
         save(saveFile, 'testLabel', 'testScore', 'numStack');
@@ -117,4 +116,4 @@ for expt = 1 : 10
     end
 end
 
-% system('shutdown -s')
+system('shutdown -s')
