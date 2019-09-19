@@ -16,8 +16,8 @@ expt = fullfile(exptFolder,'fileNames.mat');
 checkpointFolder = '../net/cnn/checkpoint/';
 checkpointFreq = 10;
 
-maxTrainEpochs = 500;
-batchSize = 100;
+maxTrainEpochs = 100;
+batchSize = 500;
 algo = 'adam';
 learningRate = 0.001;
 L2Reg = 0.00001;
