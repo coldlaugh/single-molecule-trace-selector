@@ -1,9 +1,20 @@
 # Experiments
 
-| Experiments | Training data set | Testing data set |
-| ----------- | ----------------- | ---------------- |
-| 1-1 to 1-10 |  user traces (5000 positive + 20000 negative) + simulated traces (5000 positive) | user traces (900 positive + 4000 negative) |
-| 2-1 to 2-10 | user traces (5000 positive + 20000 negative) | user traces (900 positive + 4000 negative) |
+* Experimental Conditions
+
+| Experiments | Training Dataset | Testing Dataset | 
+| ----------- | ----------------- | ---------------- | 
+| 1-1 to 1-10 |  80% user traces + all simulated traces | 20% user traces |
+| 2-1 to 2-10 | 80% user traces | 20% user traces |
+
+* User Traces Statistics
+
+| Experiment System | Accepted Traces | Rejected Traces |
+| ---- | ----- | ----- |
+| RNA0 | 2050 | 4332 |
+| RIB | 2538 | 15688 |
+| W3T | 366 | 2896 | 
+| HaMMy | 156 | 1369 | 
 
 ## Simple Conv. Neural Net
 
