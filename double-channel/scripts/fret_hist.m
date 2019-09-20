@@ -8,7 +8,7 @@ function fret_hist(segcell)
 indiv_hist = 0;
 agg_hist = 1;
 timebins = 1;
-minframes = 500; % Set to zero if you want to include all frames from each molecule
+minframes = 600; % Set to zero if you want to include all frames from each molecule
 % minframes = 0;
 threshold = 0.5;
 threshold2 = 0.5;

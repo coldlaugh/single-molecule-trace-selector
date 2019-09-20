@@ -5,7 +5,8 @@
 
 
 read = @(loc) load(loc, '-mat');
-token = 'W6';
+token = 'rib1';
+close all;
 for expt = 1 : 10
     for condition = 1 : 2
         truthSegCell = {};
@@ -66,8 +67,14 @@ for expt = 1 : 10
             end
         end
         fret_hist(truthSegCell);
+        fig = figure(1); title("Ground Truth"); saveas(fig, fullfile(exptFolder, strcat(token, '_FRET_hist_truth.fig')));
+        close 1; close 2;
         fret_hist(cnnSegCell);
+        fig = figure(1); title("Conv. Neural Net"); saveas(fig, fullfile(exptFolder, strcat(token, '_FRET_hist_cnn-simple.fig')));
+        close 1; close 2;
         fret_hist(rnnSegCell);
+        fig = figure(1); title("Recur. Neural Net"); saveas(fig, fullfile(exptFolder, strcat(token, '_FRET_hist_rnn.fig')));
+        close 1; close 2;
     end
 end
 
