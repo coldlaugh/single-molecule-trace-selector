@@ -116,4 +116,7 @@ Average training time:
 
 Here we show the FRET historam obtained using experiment 1-1 as a illustration of the performance of the algorithms.
 
-![](https://github.com/coldlaugh/single-molecule-trace-selector/blob/master/double-channel/experiments/experiment1-1/HaMMy_FRET_hist.png)
+| Experiment System | FRET histogram |
+| ----------------- | -------------- |
+| HaMMy | ![](https://github.com/coldlaugh/single-molecule-trace-selector/blob/master/double-channel/experiments/experiment1-1/HaMMy_FRET_hist.png)| 
+
