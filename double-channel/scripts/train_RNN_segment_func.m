@@ -25,7 +25,7 @@ dataUsageForTrain = 0.8;
 rejectedDropRate = 0.0;
 
 netFolder = fullfile(exptFolder);
-netOutput = 'rnn-LSTM-segment.mat';
+netOutput = 'rnn-LSTM-segment-accepted.mat';
 
 assert(contains(expt, netFolder),strcat(...
     "Error: Experiment folder ", expt, ...
@@ -40,6 +40,12 @@ assert(contains(expt, netFolder),strcat(...
 
 dataset = load(expt,'-mat');
 read = @(loc)load(loc,'data');
+
+
+% Use only accepted data
+
+dataset.trainSet = dataset.trainSet(contains(dataset.trainSet,'accepted'));
+dataset.testSet = dataset.testSet(contains(dataset.testSet,'accepted'));
 
 % Devide test and train set
 
@@ -115,7 +121,7 @@ rnnLayers = [
     reluLayer
     fullyConnectedLayer(numClasses,'WeightLearnRateFactor', 10, 'BiasLearnRateFactor', 10)
     softmaxLayer
-    weightedSerialClassificationLayer('layer',[2,1])
+    weightedSerialClassificationLayer('layer',[1,1])
     ];
 
 options = trainingOptions(...
