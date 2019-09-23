@@ -17,7 +17,7 @@ checkpointFolder = '../net/cnn/checkpoint/';
 checkpointFreq = 10;
 
 maxTrainEpochs = 100;
-batchSize = 200;
+batchSize = 500;
 algo = 'adam';
 learningRate = 0.0001;
 L2Reg = 0.00001;
@@ -82,15 +82,15 @@ close(userMsg);
 %% Setup net
 
 endLayers = [
-    fullyConnectedLayer(numClasses,'Name','fc','WeightLearnRateFactor',100,'BiasLearnRateFactor',100)
+    fullyConnectedLayer(numClasses,'Name','fc','WeightLearnRateFactor',10,'BiasLearnRateFactor',10)
     softmaxLayer('Name','softmax')
-    classificationLayer
+    weightedClassificationLayer('classification',[1,1])
     ];
 
 cnnLayers = [
     imageInputLayer(inputSize,'normalization','zerocenter')
     upsampleLayer
-    baseNet.Layers(2:end-3)
+    baseNet(2:end-3)
     endLayers
     ];
 

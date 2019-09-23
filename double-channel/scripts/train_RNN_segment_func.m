@@ -44,8 +44,8 @@ read = @(loc)load(loc,'data');
 
 % Use only accepted data
 
-dataset.trainSet = dataset.trainSet(~contains(dataset.trainSet,'rejected'));
-dataset.testSet = dataset.testSet(contains(dataset.testSet,'rejected'));
+dataset.trainSet = dataset.trainSet(contains(dataset.trainSet,'accepted'));
+dataset.testSet = dataset.testSet(contains(dataset.testSet,'accepted'));
 
 % Devide test and train set
 
