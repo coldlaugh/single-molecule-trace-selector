@@ -41,12 +41,6 @@ assert(contains(expt, netFolder),strcat(...
 dataset = load(expt,'-mat');
 read = @(loc)load(loc,'data');
 
-
-% Use only accepted data
-
-dataset.trainSet = dataset.trainSet(contains(dataset.trainSet,'accepted'));
-dataset.testSet = dataset.testSet(contains(dataset.testSet,'accepted'));
-
 % Devide test and train set
 
 numTrain = length(dataset.trainSet);
@@ -121,7 +115,7 @@ rnnLayers = [
     reluLayer
     fullyConnectedLayer(numClasses,'WeightLearnRateFactor', 10, 'BiasLearnRateFactor', 10)
     softmaxLayer
-    weightedSerialClassificationLayer('layer',[1,1])
+    weightedSerialClassificationLayer('layer',[4,1])
     ];
 
 options = trainingOptions(...
