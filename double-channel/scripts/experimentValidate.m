@@ -90,7 +90,7 @@ for expt = 1 : 10
     for condition = 1 : 2
         exptFolder = strcat('../experiments/experiment',num2str(condition),'-',num2str(expt),'/');
         userMsg = waitbar(0,strcat('Testing rnn LSTM in ', exptFolder),'Name','Test');
-        netFile = fullfile(exptFolder, "rnn-LSTM-segment-accepted.mat");
+        netFile = fullfile(exptFolder, "rnn-LSTM-segment.mat");
         nameFile = fullfile(exptFolder, "fileNames.mat");
         dump = load(netFile, '-mat');
         rnnNet = dump.rnnNet;
@@ -110,10 +110,10 @@ for expt = 1 : 10
             testScore{i} = score(1,:);
             waitbar(i / length(dataset.testSet), userMsg);
         end
-        saveFile = fullfile(exptFolder, "test-rnn-lstm-segment-accepted.mat");
+        saveFile = fullfile(exptFolder, "test-rnn-lstm-segment.mat");
         save(saveFile, 'testLabel', 'testScore', 'numStack');
         close(userMsg);
     end
 end
-%%
+
 system('shutdown -s')
