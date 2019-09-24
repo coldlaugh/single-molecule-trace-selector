@@ -5,7 +5,7 @@
 
 
 read = @(loc) load(loc, '-mat');
-token = 'RNA0-bubble_M200mMKCl';
+token = 'W';
 close all;
 for expt = 1 : 1
     for condition = 1 : 1
