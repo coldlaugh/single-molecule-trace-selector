@@ -5,10 +5,10 @@
 
 
 read = @(loc) load(loc, '-mat');
-token = 'rib1';
+token = 'RNA0-bubble_M200mMKCl';
 close all;
-for expt = 1 : 10
-    for condition = 1 : 2
+for expt = 1 : 1
+    for condition = 1 : 1
         truthSegCell = {};
         cnnSegCell = {};
         rnnSegCell = {};
