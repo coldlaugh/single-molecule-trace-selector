@@ -119,8 +119,8 @@ Here we show the FRET historam obtained using experiment 1-1 as a illustration o
 
 | Experiment System | FRET histogram |
 | ----------------- | -------------- |
-| RNA0-bubble_M50mMKCl | ![](https://github.com/coldlaugh/single-molecule-trace-selector/blob/master/double-channel/experiments/experiment1-1/RNA0-bubble_M50mMKCl_FRET_hist.png)| 
-| RIB1 | ![](https://github.com/coldlaugh/single-molecule-trace-selector/blob/master/double-channel/experiments/experiment1-1/rib1_FRET_hist.png)| 
-| W 3T | ![](https://github.com/coldlaugh/single-molecule-trace-selector/blob/master/double-channel/experiments/experiment1-1/W_FRET_hist.png)| 
-| HaMMy | ![](https://github.com/coldlaugh/single-molecule-trace-selector/blob/master/double-channel/experiments/experiment1-1/HaMMy_FRET_hist.png)| 
+| RNA0-bubble_M50mMKCl | ![](https://github.com/coldlaugh/single-molecule-trace-selector/blob/master/double-channel/experiments/experiment1-1/RNA0-bubble_M200mMKCl_FRET_hist_truth.png)| 
+| RIB1 | ![](https://github.com/coldlaugh/single-molecule-trace-selector/blob/master/double-channel/experiments/experiment1-1/rib5_FRET_hist_truth.png)| 
+| W 3T | ![](https://github.com/coldlaugh/single-molecule-trace-selector/blob/master/double-channel/experiments/experiment1-1/W_FRET_hist_truth.png)| 
+| HaMMy | ![](https://github.com/coldlaugh/single-molecule-trace-selector/blob/master/double-channel/experiments/experiment1-1/HaMMy_FRET_hist_truth.png)| 
 
