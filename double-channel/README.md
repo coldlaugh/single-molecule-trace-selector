@@ -1,6 +1,6 @@
 # Double-channel FRET analysis using machine learning
 
-- [Experiments](https://github.com/coldlaugh/single-molecule-trace-selector/blob/master/double-channel/experiments/README.md)
+{{md https://github.com/coldlaugh/single-molecule-trace-selector/blob/master/double-channel/experiments/README.md}}
 
 # Method
 
