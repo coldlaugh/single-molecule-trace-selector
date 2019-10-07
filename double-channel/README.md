@@ -116,10 +116,17 @@ Average training time:
 ## Trace Segmentation - LSTM
 ## ROC
 
-| Expt. Cond. | ROC |
+| Expt. Cond. | ROC | 
 | ----------- | --- |
 | Cond. 1 | ![](figures/roc_cond1.png) |
 | Cond. 2 | ![](figures/roc_cond2.png) |
+
+## Area under the ROC curve (AUC)
+
+| Expt. Cond. | AUC CNN | AUC LSTM
+| ----------- | --- | --- | 
+| Cond. 1 | 0.95 | 0.95 |
+| Cond. 2 | 0.95 | 0.95 |
 
 # Results
 
