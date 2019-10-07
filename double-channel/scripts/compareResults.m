@@ -12,24 +12,27 @@ for expt = 1 : 10
         rnnData = load(fullfile(exptFolder, rnnFile),'-mat');
         disp("============================");
         disp(exptFolder);
-        disp('cnn:');
-        tn = sum((~cnnData.testLabel) & (~label'));
-        tp = sum((cnnData.testLabel) & (label'));
-        fn = sum((~cnnData.testLabel) & (label'));
-        fp = sum((cnnData.testLabel) & (~label'));
-        disp(strcat('condordance = ',  num2str( (tn+tp) / (tn+tp+fn+fp)) ));
-        disp(strcat('sensitivity = ',  num2str(tp / (tp + fn)) ))
-        disp(strcat('specifity = ', num2str(tn / (tn + fp)) ))
-        disp(strcat('precision = ', num2str(tp / (tp + fp)) ))
-        disp('rnn:');
-        tn = sum((~rnnData.testLabel) & (~label'));
-        tp = sum((rnnData.testLabel) & (label'));
-        fn = sum((~rnnData.testLabel) & (label'));
-        fp = sum((rnnData.testLabel) & (~label'));
-        disp(strcat('condordance = ',  num2str( (tn+tp) / (tn+tp+fn+fp)) ));
-        disp(strcat('sensitivity = ',  num2str(tp / (tp + fn)) ))
-        disp(strcat('specifity = ', num2str(tn / (tn + fp)) ))
-        disp(strcat('precision = ', num2str(tp / (tp + fp)) ))
+        disp('cnn vs truth:');
+        compare(cnnData.testLabel==1, label');
+        disp('rnn vs truth:');
+        compare(rnnData.testLabel==1, label');
+        disp('cnn vs rnn:')
+        compare(cnnData.testLabel==1, rnnData.testLabel==1);
+        disp('cnn && rnn vs truth:')
+        compare(cnnData.testLabel==1 & rnnData.testLabel==1, label');
+        disp('cnn || rnn vs truth:')
+        compare(cnnData.testLabel==1 | rnnData.testLabel==1, label');
         pause;
     end
+end
+
+function compare(testLabel, trueLabel)
+        tn = sum((~testLabel) & (~trueLabel));
+        tp = sum((testLabel) & (trueLabel));
+        fn = sum((~testLabel) & (trueLabel));
+        fp = sum((testLabel) & (~trueLabel));
+        disp(strcat('condordance = ',  num2str( (tn+tp) / (tn+tp+fn+fp)) ));
+        disp(strcat('sensitivity = ',  num2str(tp / (tp + fn)) ))
+        disp(strcat('specifity = ', num2str(tn / (tn + fp)) ))
+        disp(strcat('precision = ', num2str(tp / (tp + fp)) ))
 end

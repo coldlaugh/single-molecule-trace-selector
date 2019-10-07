@@ -114,6 +114,19 @@ Average training time:
 Average training time: 
 
 ## Trace Segmentation - LSTM
+## ROC
+
+| Expt. Cond. | ROC | 
+| ----------- | --- |
+| Cond. 1 | ![](figures/roc_cond1.png) |
+| Cond. 2 | ![](figures/roc_cond2.png) |
+
+## Area under the ROC curve (AUC)
+
+| Expt. Cond. | AUC CNN | AUC LSTM
+| ----------- | --- | --- | 
+| Cond. 1 | 0.95 | 0.95 |
+| Cond. 2 | 0.95 | 0.95 |
 
 # Results
 
@@ -121,10 +134,10 @@ Here we show the FRET historam obtained using experiment 1-1 as a illustration o
 
 | Experiment System | FRET histogram |
 | ----------------- | -------------- |
-| RNA0-bubble_M50mMKCl | ![](https://github.com/coldlaugh/single-molecule-trace-selector/blob/master/double-channel/experiments/experiment1-1/RNA0-bubble_M200mMKCl_FRET_hist_truth.png)| 
-| RIB1 | ![](https://github.com/coldlaugh/single-molecule-trace-selector/blob/master/double-channel/experiments/experiment1-1/rib5_FRET_hist_truth.png)| 
-| W 3T | ![](https://github.com/coldlaugh/single-molecule-trace-selector/blob/master/double-channel/experiments/experiment1-1/W_FRET_hist_truth.png)| 
-| HaMMy | ![](https://github.com/coldlaugh/single-molecule-trace-selector/blob/master/double-channel/experiments/experiment1-1/HaMMy_FRET_hist_truth.png)| 
+| RNA0-bubble_M50mMKCl | ![](experiments/experiment1-1/RNA0-bubble_M200mMKCl_FRET_hist_truth.png)| 
+| RIB1 | ![](experiments/experiment1-1/rib5_FRET_hist_truth.png)| 
+| W 3T | ![](experiments/experiment1-1/W_FRET_hist_truth.png)| 
+| HaMMy | ![](experiments/experiment1-1/HaMMy_FRET_hist_truth.png)| 
 
 
 # Method
