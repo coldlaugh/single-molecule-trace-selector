@@ -29,9 +29,9 @@ for condition = 1 : 2
     legend('CNN','LSTM');
     title(strcat("condition ", num2str(condition)));
     disp("Condition: " + condition);
-    disp("AOC of cnn:");   
+    disp("AUC of cnn:");   
     disp(aoc(mean(fpr_cnn, 2), mean(tpr_cnn, 2)));
-    disp("AOC of rnn:");
+    disp("AUC of rnn:");
     disp(aoc(mean(fpr_rnn, 2), mean(tpr_rnn, 2)));
 end
 
