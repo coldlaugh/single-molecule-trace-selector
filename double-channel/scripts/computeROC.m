@@ -28,10 +28,15 @@ for condition = 1 : 2
     plot(mean(fpr_rnn, 2), mean(tpr_rnn, 2), 'g-');
     legend('CNN','LSTM');
     title(strcat("condition ", num2str(condition)));
+    disp("Condition: " + condition);
+    disp("AOC of cnn:");   
+    disp(aoc(mean(fpr_cnn, 2), mean(tpr_cnn, 2)));
+    disp("AOC of rnn:");
+    disp(aoc(mean(fpr_rnn, 2), mean(tpr_rnn, 2)));
 end
 
 function [tpr, fpr] = roc(score, label)
-    n_roc = 1000;
+    n_roc = 10000;
     tn = zeros(n_roc, 1);
     tp = zeros(n_roc, 1);
     fn = zeros(n_roc, 1);
@@ -46,4 +51,12 @@ function [tpr, fpr] = roc(score, label)
     end
     fpr = fp ./ (tn + fp);
     tpr = tp ./ (tp + fn);
+end
+
+function s = aoc(fpr, tpr)
+    n_interp = 10000;
+    [fpr, index] = unique(fpr);
+    tpr = tpr(index);
+    value = interp1(fpr, tpr, linspace(0,1,n_interp));
+    s = sum(value) / n_interp;
 end
