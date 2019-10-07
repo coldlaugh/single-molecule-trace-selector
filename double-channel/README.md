@@ -121,7 +121,7 @@ Average training time:
 | Cond. 1 | ![](figures/roc_cond1.png) |
 | Cond. 2 | ![](figures/roc_cond2.png) |
 
-## AOC
+## Area under the ROC curve (AUC)
 
 | Expt. Cond. | AOC CNN | AOC LSTM
 | ----------- | --- | --- | 
