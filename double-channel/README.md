@@ -18,7 +18,7 @@
 | W3T | 366 | 2896 | 
 | HaMMy | 156 | 1369 | 
 | Simulation | 5000 | 0 |
-
+| Total | 10110 | 24285 |
 ## Simple Conv. Neural Net
 
 * Net structure
