@@ -112,6 +112,34 @@ Average training time:
 | Average | 72.0% |	95.1%	| 76.2%	| 91.0%| 
 
 Average training time: 
+## Simple-CNN vs LSTM
+| Expt | Sensitivity | Specificity | Precision | Concordance |
+| ---- | ----------- | ----------- | ----------- | ----------- |
+| 1-1  | NA | NA | NA | 89.9% | 
+| 1-2  |  NA | NA | NA | 89.8% | 
+| 1-3  |  NA | NA | NA | 89.5% | 
+| 1-4  |  NA | NA | NA | 89.1% | 
+| 1-5  |  NA | NA | NA | 89.0% | 
+| 1-6  |  NA | NA | NA | 88.6% |
+| 1-7  |  NA | NA | NA | 89.7% |
+| 1-8  |  NA | NA | NA | 89.9% |
+| 1-9  |  NA | NA | NA | 89.7% |
+| 1-10  |  NA | NA | NA | 89.4% |
+| Average |  NA | NA | NA | 89.5%| 
+
+| Expt | Sensitivity | Specificity | Precision | Concordance |
+| ---- | ----------- | ----------- | ----------- | ----------- |
+| 2-1  |  NA | NA | NA | 89.9% | 
+| 2-2  |  NA | NA | NA | 89.7% | 
+| 2-3  |  NA | NA | NA | 91.2% | 
+| 2-4  |  NA | NA | NA | 90.8% | 
+| 2-5  |  NA | NA | NA | 90.5% | 
+| 2-6  |  NA | NA | NA | 89.9% |
+| 2-7  |  NA | NA | NA | 90.2% |
+| 2-8  |  NA | NA | NA | 89.9% |
+| 2-9  |  NA | NA | NA | 89.3% |
+| 2-10  |  NA | NA | NA | 89.9% |
+| Average | NA | NA | NA | 90.1%| 
 
 ## Trace Segmentation - LSTM
 ## ROC
