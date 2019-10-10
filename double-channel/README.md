@@ -142,6 +142,35 @@ Average training time:
 | Average | NA | NA | NA | 90.1%| 
 
 ## Trace Segmentation - LSTM
+
+| Expt | Sensitivity | Specificity | Precision | Concordance |
+| ---- | ----------- | ----------- | ----------- | ----------- |
+| 1-1  | 83.8% | 96.1% | 49.2% | 95.6% | 
+| 1-2  |  NA | NA | NA | NA | 
+| 1-3  |  NA | NA | NA | NA |  
+| 1-4  |  NA | NA | NA | NA | 
+| 1-5  |  NA | NA | NA | NA | 
+| 1-6  |  NA | NA | NA | NA | 
+| 1-7  |  NA | NA | NA | NA | 
+| 1-8  |  NA | NA | NA | NA | 
+| 1-9  |  NA | NA | NA | NA | 
+| 1-10  |  NA | NA | NA | NA | 
+| Average |  NA | NA | NA | NA |  
+
+| Expt | Sensitivity | Specificity | Precision | Concordance |
+| ---- | ----------- | ----------- | ----------- | ----------- |
+| 2-1  |  86.8% | 95.3% | 45.2% | 94.9% | 
+| 2-2  |  NA | NA | NA | NA | 
+| 2-3  |  NA | NA | NA | NA |  
+| 2-4  |  NA | NA | NA | NA | 
+| 2-5  |  NA | NA | NA | NA | 
+| 2-6  |  NA | NA | NA | NA | 
+| 2-7  |  NA | NA | NA | NA | 
+| 2-8  |  NA | NA | NA | NA | 
+| 2-9  |  NA | NA | NA | NA | 
+| 2-10  |  NA | NA | NA | NA | 
+| Average | NA | NA | NA | NA | 
+
 ## ROC
 
 | Expt. Cond. | ROC | 
