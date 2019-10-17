@@ -70,3 +70,6 @@ codegen/
 
 #Matlab temp files
 *.m~
+
+#Manuscripts
+*.docx

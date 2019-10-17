@@ -1,15 +1,17 @@
 %% compare testing results
 
 for expt = 1 : 10
-    for condition = 2
+    for condition = 1 : 2
         exptFolder = strcat('../experiments/experiment',num2str(condition),'-',num2str(expt),'/');
         cnnFile = "test-simple-cnn.mat";
         rnnFile = "test-rnn-lstm.mat";
+        rnnSegFile = "test-rnn-lstm-segment-weighted.mat";
         fileName = "fileNames.mat";
         fileData = load(fullfile(exptFolder, fileName), '-mat');
         label = ~contains(fileData.testSet, 'rejected');
         cnnData = load(fullfile(exptFolder, cnnFile),'-mat');
         rnnData = load(fullfile(exptFolder, rnnFile),'-mat');
+        segData = load(fullfile(exptFolder, rnnSegFile),'-mat');
         disp("============================");
         disp(exptFolder);
         disp('cnn vs truth:');
@@ -20,8 +22,6 @@ for expt = 1 : 10
         compare(cnnData.testLabel==1, rnnData.testLabel==1);
         disp('cnn && rnn vs truth:')
         compare(cnnData.testLabel==1 & rnnData.testLabel==1, label');
-        disp('cnn || rnn vs truth:')
-        compare(cnnData.testLabel==1 | rnnData.testLabel==1, label');
         pause;
     end
 end

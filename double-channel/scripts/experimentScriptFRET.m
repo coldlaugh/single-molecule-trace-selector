@@ -5,13 +5,14 @@
 
 
 read = @(loc) load(loc, '-mat');
-token = 'W';
+token = 'HaMMy';
 close all;
 for expt = 1 : 1
     for condition = 1 : 1
         truthSegCell = {};
         cnnSegCell = {};
         rnnSegCell = {};
+        crnnSegCell = {};
         exptFolder = strcat('../experiments/experiment',num2str(condition),'-',num2str(expt),'/');
         filename = "fileNames.mat";
         cnnfile = "test-simple-cnn.mat";
@@ -37,7 +38,7 @@ for expt = 1 : 1
                     end
                 end
             end
-            if cnnData.testLabel(i)
+            if cnnData.testLabel(i)==1
                 seg = [];
                 for j = 1 : length(trace.data)
                     if j > length(segData.testLabel{i}) * segData.numStack
@@ -51,7 +52,7 @@ for expt = 1 : 1
                     end
                 end
             end
-            if rnnData.testLabel(i)
+            if rnnData.testLabel(i)==1
                 seg = [];
                 for j = 1 : length(trace.data)
                     if j > length(segData.testLabel{i}) * segData.numStack
@@ -61,6 +62,20 @@ for expt = 1 : 1
                         seg = [seg;j trace.data(1,j) trace.data(2,j) trace.data(2,j)/(trace.data(1,j)+trace.data(2,j))];
                     elseif ~isempty(seg)
                         rnnSegCell{end+1} = seg;
+                        seg = [];
+                    end
+                end
+            end
+            if rnnData.testLabel(i)==1 && cnnData.testLabel(i)==1
+                seg = [];
+                for j = 1 : length(trace.data)
+                    if j > length(segData.testLabel{i}) * segData.numStack
+                        continue;
+                    end
+                    if segData.testLabel{i}(ceil(j / segData.numStack))
+                        seg = [seg;j trace.data(1,j) trace.data(2,j) trace.data(2,j)/(trace.data(1,j)+trace.data(2,j))];
+                    elseif ~isempty(seg)
+                        crnnSegCell{end+1} = seg;
                         seg = [];
                     end
                 end
@@ -75,6 +90,10 @@ for expt = 1 : 1
         fret_hist(rnnSegCell);
         fig = figure(1); title("Recur. Neural Net"); saveas(fig, fullfile(exptFolder, strcat(token, '_FRET_hist_rnn.fig')));
         close 1; close 2;
+        fret_hist(crnnSegCell);
+        fig = figure(1); title("Conv. + Recur. Neural Net"); saveas(fig, fullfile(exptFolder, strcat(token, '_FRET_hist_cnn_and_rnn.fig')));
+        close 1; close 2;
+        pause()
     end
 end
 
