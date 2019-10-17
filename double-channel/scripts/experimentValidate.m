@@ -13,7 +13,8 @@ end
 %   \________________________________________________/
 inputSize = [32,32,3];
 read = @(loc)(imresize(imread(loc),inputSize(1:2)));
-
+timer = tic;
+tictoc = [];
 for expt = 1 : 10
     for condition = 1 : 2
         exptFolder = strcat('../experiments/experiment',num2str(condition),'-',num2str(expt),'/');
@@ -31,14 +32,14 @@ for expt = 1 : 10
             testLabel(i) = (pred == "1");
             testScore(i) = score(1);
             waitbar(i / length(dataset.testSet), userMsg);
+            tictoc(end+1) = toc(timer);
         end
         saveFile = fullfile(exptFolder, "test-simple-cnn.mat");
         save(saveFile, 'testLabel', 'testScore');
         close(userMsg);
     end
 end
-
-
+disp("Processed " + length(tictoc) + " traces in " + max(tictoc) + " seconds.")
 %% RNN-LSTM
 %    ________________________________________________
 %   /                                                \
@@ -46,8 +47,9 @@ end
 %   \________________________________________________/
 read = @(loc)load(loc,'data');
 numStack = 10;
-
-for expt = 1 : 10
+timer = tic;
+tictoc = [];
+for expt = 1 : 1
     for condition = 1 : 2
         exptFolder = strcat('../experiments/experiment',num2str(condition),'-',num2str(expt),'/');
         userMsg = waitbar(0,strcat('Testing rnn LSTM in ', exptFolder),'Name','Test');
@@ -70,13 +72,14 @@ for expt = 1 : 10
             testLabel(i) = (pred == "1");
             testScore(i) = score(1);
             waitbar(i / length(dataset.testSet), userMsg);
+            tictoc(end+1) = toc(timer);
         end
         saveFile = fullfile(exptFolder, "test-rnn-lstm.mat");
         save(saveFile, 'testLabel', 'testScore');
         close(userMsg);
     end
 end
-
+disp("Processed " + length(tictoc) + " traces in " + max(tictoc) + " seconds.")
 
 %% RNN-LSTM-Segment
 %    ________________________________________________
@@ -85,8 +88,9 @@ end
 %   \________________________________________________/
 read = @(loc)load(loc,'data');
 numStack = 10;
-
-for expt = 1 : 10
+timer = tic;
+tictoc = [];
+for expt = 1 : 1
     for condition = 1 : 2
         exptFolder = strcat('../experiments/experiment',num2str(condition),'-',num2str(expt),'/');
         userMsg = waitbar(0,strcat('Testing rnn LSTM in ', exptFolder),'Name','Test');
@@ -109,11 +113,13 @@ for expt = 1 : 10
             testLabel{i} = (pred == "1");
             testScore{i} = score(1,:);
             waitbar(i / length(dataset.testSet), userMsg);
+            tictoc(end+1) = toc(timer);
         end
         saveFile = fullfile(exptFolder, "test-rnn-lstm-segment-weighted.mat");
         save(saveFile, 'testLabel', 'testScore', 'numStack');
         close(userMsg);
     end
 end
+disp("Processed " + length(tictoc) + " traces in " + max(tictoc) + " seconds.")
 
-system('shutdown -s')
+% system('shutdown -s')
