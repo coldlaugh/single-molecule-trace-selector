@@ -5,10 +5,10 @@
 
 
 read = @(loc) load(loc, '-mat');
-token = 'HaMMy';
+token = 'rib6';
 close all;
 for expt = 1 : 1
-    for condition = 1 : 1
+    for condition = 1 : 2
         truthSegCell = {};
         cnnSegCell = {};
         rnnSegCell = {};
@@ -17,7 +17,7 @@ for expt = 1 : 1
         filename = "fileNames.mat";
         cnnfile = "test-simple-cnn.mat";
         rnnfile = "test-rnn-lstm.mat";
-        segmentfile = "test-rnn-lstm-segment.mat";
+        segmentfile = "test-rnn-lstm-segment-weighted.mat";
         files = load(fullfile(exptFolder, filename),'-mat');
         cnnData = load(fullfile(exptFolder, cnnfile),'-mat');
         rnnData = load(fullfile(exptFolder, rnnfile),'-mat');

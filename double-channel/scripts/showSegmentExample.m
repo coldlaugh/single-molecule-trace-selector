@@ -5,7 +5,7 @@
 
 
 read = @(loc) load(loc, '-mat');
-token = 'W7';
+token = 'RNA';
 close all;
 for expt = 1 : 1
     for condition = 1 : 1
@@ -22,29 +22,42 @@ for expt = 1 : 1
             if ~contains(files.testSet{i}, token)
                 continue;
             end
-            if ~ (rnnData.testLabel(i) && cnnData.testLabel(i))
+            if ~ (rnnData.testLabel(i) || cnnData.testLabel(i) || contains(files.testSet{i},'accepted'))
                 continue;
-            end
+            end  
+%             if ~ (rnnData.testLabel(i) && cnnData.testLabel(i))
+%                 continue;
+%             end
             trace = read(fullfile(files.serialFolder,strcat(files.testSet{i},files.serialFormat)));
-%             if contains(files.testSet{i},'accepted')
-%                 disp("Showing ground truth")
-%                 plot_trace(trace.data, trace.data(3,:));
-%             end
-%             if cnnData.testLabel(i)
-%                 disp("Showing cnn result")
-%                 segLabel = flatten(trace.data, segData.testLabel{i}, segData.numStack);
-%                 plot_trace(trace.data, segLabel)
-%             end
-%             if rnnData.testLabel(i)
-%                 disp("Showing rnn result")
-%                 segLabel = flatten(trace.data, segData.testLabel{i}, segData.numStack);
-%                 plot_trace(trace.data, segLabel)
-%             end
-            if rnnData.testLabel(i) && cnnData.testLabel(i)
-                disp("Showing cnn + rnn result")
+            figure(1);cla;clf;hold on;
+            if contains(files.testSet{i},'accepted')
+                disp("Showing ground truth")
+                subplot(4,1,1); hold on;
+                plot_trace(trace.data, trace.data(3,:));
+                title("Showing ground truth")
+            end
+            if cnnData.testLabel(i)
+                disp("Showing cnn result")
+                subplot(4,1,2); hold on;
                 segLabel = flatten(trace.data, segData.testLabel{i}, segData.numStack);
                 plot_trace(trace.data, segLabel)
+                title("Showing cnn result")
             end
+            if rnnData.testLabel(i)
+                disp("Showing rnn result")
+                subplot(4,1,3); hold on;
+                segLabel = flatten(trace.data, segData.testLabel{i}, segData.numStack);
+                plot_trace(trace.data, segLabel)
+                title("Showing rnn result")
+            end
+            if rnnData.testLabel(i) && cnnData.testLabel(i)
+                disp("Showing cnn + rnn result")
+                subplot(4,1,4); hold on;
+                segLabel = flatten(trace.data, segData.testLabel{i}, segData.numStack);
+                plot_trace(trace.data, segLabel)
+                title("Showing cnn + rnn result")
+            end
+            pause()
         end
     end
 end
@@ -58,18 +71,26 @@ function label = flatten(trace, segLabel, numStack)
 end
 
 function plot_trace(trace, segLabel)
-    figure(1);cla;hold on;
     frame = 1 : length(trace);
     segLabel = boolean(segLabel);
     p = plot(frame, trace(1,:),'b--');
-    p.Color(4) = 0.1;
+    if ~isempty(p)
+        p.Color(4) = 0.2;
+    end
     p = plot(frame, trace(2,:),'r--');
-    p.Color(4) = 0.1;
-    p = plot(frame(segLabel), trace(1,segLabel),'b-');
-    p.Color(4) = 0.8;
-    p = plot(frame(segLabel), trace(2,segLabel),'r-');
-    p.Color(4) = 0.8;
-    xlim([0 2000])
-    pause
+    if ~isempty(p)
+        p.Color(4) = 0.2;
+    end
+    frame(~segLabel) = nan;
+    trace(:,~segLabel) = nan;
+    p = plot(frame, trace(1,:),'b-');
+    if ~isempty(p)
+        p.Color(4) = 1;
+    end
+    p = plot(frame, trace(2,:),'r-');
+    if ~isempty(p)
+        p.Color(4) = 1;
+    end
+%     xlim()
 end
 

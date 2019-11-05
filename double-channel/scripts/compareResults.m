@@ -12,6 +12,10 @@ for expt = 1 : 10
         rnnData = load(fullfile(exptFolder, rnnFile),'-mat');
         disp("============================");
         disp(exptFolder);
+        disp('cnn vs truth:')
+        compare(cnnData.testLabel==1, label');
+        disp('rnn vs truth:')
+        compare(rnnData.testLabel==1, label');
         disp('cnn && rnn vs truth:')
         compare(cnnData.testLabel==1 & rnnData.testLabel==1, label');
         pause;
