@@ -5,8 +5,8 @@
 
 
 read = @(loc) load(loc, '-mat');
-token = 'RNA';
-close all;
+token = 'rib';
+% close all;
 for expt = 1 : 1
     for condition = 1 : 1
         exptFolder = strcat('../experiments/experiment',num2str(condition),'-',num2str(expt),'/');
