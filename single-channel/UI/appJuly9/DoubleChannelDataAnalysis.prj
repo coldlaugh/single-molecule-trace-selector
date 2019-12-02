@@ -1,0 +1,82 @@
+<deployment-project plugin="plugin.apptool" plugin-version="1.0">
+  <configuration build-checksum="1659616148" file="/Users/leyou/Desktop/FRET/beta2.0/appJuly9/DoubleChannelDataAnalysis.prj" location="/Users/leyou/Desktop/FRET/beta2.0/appJuly9" name="DoubleChannelDataAnalysis" target="target.mlapps" target-name="Package App">
+    <param.appname>DoubleChannelDataAnalysis</param.appname>
+    <param.authnamewatermark>Leyou Zhang, Jieming Li</param.authnamewatermark>
+    <param.email />
+    <param.company />
+    <param.icon />
+    <param.icons />
+    <param.summary />
+    <param.description />
+    <param.screenshot />
+    <param.version>1.0</param.version>
+    <param.products.name />
+    <param.products.id />
+    <param.products.version />
+    <param.platforms>
+      <item>maci64</item>
+    </param.platforms>
+    <param.output>/Users/leyou/Desktop/FRET/beta2.0/appJuly9</param.output>
+    <param.guid>d8968792-be53-4778-9112-ad344200d7a6</param.guid>
+    <unset>
+      <param.email />
+      <param.company />
+      <param.icon />
+      <param.icons />
+      <param.summary />
+      <param.description />
+      <param.screenshot />
+      <param.version />
+      <param.products.name />
+      <param.products.id />
+      <param.products.version />
+      <param.output />
+    </unset>
+    <fileset.main>
+      <file>${PROJECT_ROOT}/doubleChannel.mlapp</file>
+    </fileset.main>
+    <fileset.depfun>
+      <file>${PROJECT_ROOT}/Folder-icon.png</file>
+      <file>${PROJECT_ROOT}/Trace-icon.png</file>
+      <file>${PROJECT_ROOT}/findSequence_mex.mexmaci64</file>
+      <file>${PROJECT_ROOT}/simrepsB1.mat</file>
+      <file>${PROJECT_ROOT}/simrepsClassificationLayer.m</file>
+      <file>${PROJECT_ROOT}/toolDataConversion.mlapp</file>
+      <file>${PROJECT_ROOT}/toolFilePicker.mlapp</file>
+      <file>/Users/leyou/Desktop/FRET/beta2.0/regionalPropose.m</file>
+      <file>/Users/leyou/Desktop/FRET/beta2.0/toolLabelSetup.mlapp</file>
+    </fileset.depfun>
+    <fileset.resources />
+    <fileset.package />
+    <build-deliverables>
+      <file location="/Users/leyou/Desktop/FRET/beta2.0" name="appJuly9" optional="false">/Users/leyou/Desktop/FRET/beta2.0/appJuly9</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>/Applications/MATLAB_R2018a.app</root>
+      <toolboxes>
+        <toolbox name="matlabcoder" />
+      </toolboxes>
+      <toolbox>
+        <matlabcoder>
+          <enabled>true</enabled>
+        </matlabcoder>
+      </toolbox>
+    </matlab>
+    <platform>
+      <unix>true</unix>
+      <mac>true</mac>
+      <windows>false</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>false</linux>
+      <solaris>false</solaris>
+      <osver>10.13.6</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>maci64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>

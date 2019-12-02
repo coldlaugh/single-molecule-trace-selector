@@ -1,0 +1,100 @@
+<deployment-project plugin="plugin.apptool" plugin-version="1.0">
+  <configuration build-checksum="1397628194" file="/Users/leyou/Desktop/FRET/beta2.0/SingleChannelDataAnalysis.prj" location="/Users/leyou/Desktop/FRET/beta2.0" name="SingleChannelDataAnalysis" target="target.mlapps" target-name="Package App">
+    <param.appname>SingleChannelDataAnalysis</param.appname>
+    <param.authnamewatermark>Leyou Zhang, Jieming Li</param.authnamewatermark>
+    <param.email />
+    <param.company>University of Michigan</param.company>
+    <param.icon>${PROJECT_ROOT}/SingleChannelDataAnalysis_resources/icon_24.png</param.icon>
+    <param.icons>
+      <file>${PROJECT_ROOT}/SingleChannelDataAnalysis_resources/icon_48.png</file>
+      <file>${PROJECT_ROOT}/SingleChannelDataAnalysis_resources/icon_24.png</file>
+      <file>${PROJECT_ROOT}/SingleChannelDataAnalysis_resources/icon_16.png</file>
+    </param.icons>
+    <param.summary />
+    <param.description />
+    <param.screenshot />
+    <param.version>1.0</param.version>
+    <param.products.name>
+      <item>Neural Network Toolbox</item>
+    </param.products.name>
+    <param.products.id>
+      <item>12</item>
+    </param.products.id>
+    <param.products.version>
+      <item>11.1</item>
+    </param.products.version>
+    <param.platforms />
+    <param.output>/Users/leyou/Desktop/FRET/beta2.0</param.output>
+    <param.guid>3a274a86-6db3-45be-8b43-3d74407562db</param.guid>
+    <unset>
+      <param.email />
+      <param.summary />
+      <param.description />
+      <param.screenshot />
+      <param.version />
+      <param.platforms />
+      <param.output />
+    </unset>
+    <fileset.main>
+      <file>${PROJECT_ROOT}/singleChannel.mlapp</file>
+    </fileset.main>
+    <fileset.depfun>
+      <file>${PROJECT_ROOT}/simrepsB1.mat</file>
+      <file>${PROJECT_ROOT}/simrepsClassificationLayer.m</file>
+    </fileset.depfun>
+    <fileset.resources>
+      <file>${PROJECT_ROOT}/LSTM code/SiMREPSdata/1 to 1 mil n1.tif_whole_traces.mat</file>
+      <file>${PROJECT_ROOT}/LSTM code/SiMREPSdata/1 to 1 mil n2.tif_whole_traces.mat</file>
+      <file>${PROJECT_ROOT}/LSTM code/SiMREPSdata/1 to 1 mil n3.tif_whole_traces.mat</file>
+      <file>${PROJECT_ROOT}/LSTM code/SiMREPSdata/1 to 100k n1.tif_whole_traces.mat</file>
+      <file>${PROJECT_ROOT}/LSTM code/SiMREPSdata/1 to 100k n2.tif_whole_traces.mat</file>
+      <file>${PROJECT_ROOT}/LSTM code/SiMREPSdata/1 to 100k n3.tif_whole_traces.mat</file>
+      <file>${PROJECT_ROOT}/LSTM code/SiMREPSdata/1 to 10k n1.tif_whole_traces.mat</file>
+      <file>${PROJECT_ROOT}/LSTM code/SiMREPSdata/1 to 10k n2.tif_whole_traces.mat</file>
+      <file>${PROJECT_ROOT}/LSTM code/SiMREPSdata/1 to 10k n3.tif_whole_traces.mat</file>
+      <file>${PROJECT_ROOT}/LSTM code/SiMREPSdata/1 to 10k n4.tif_whole_traces.mat</file>
+      <file>${PROJECT_ROOT}/LSTM code/SiMREPSdata/50 fM MUT n1.tif_whole_traces.mat</file>
+      <file>${PROJECT_ROOT}/LSTM code/SiMREPSdata/50 fM MUT n2.tif_whole_traces.mat</file>
+      <file>${PROJECT_ROOT}/LSTM code/SiMREPSdata/50 fM MUT n3.tif_whole_traces.mat</file>
+      <file>${PROJECT_ROOT}/LSTM code/SiMREPSdata/50 nM WT n1.tif_whole_traces.mat</file>
+      <file>${PROJECT_ROOT}/LSTM code/SiMREPSdata/50 nM WT n2.tif_whole_traces.mat</file>
+      <file>${PROJECT_ROOT}/LSTM code/SiMREPSdata/50 nM WT n3.tif_whole_traces.mat</file>
+      <file>${PROJECT_ROOT}/LSTM code/SiMREPSdata/50 nM WT n4.tif_whole_traces.mat</file>
+      <file>${PROJECT_ROOT}/LSTM code/SiMREPSdata/50 nM WT n5.tif_whole_traces.mat</file>
+      <file>${PROJECT_ROOT}/LSTM code/SiMREPSdata/50 nM WT n6.tif_whole_traces.mat</file>
+      <file>${PROJECT_ROOT}/LSTM code/SiMREPSdata/50 nM WT n7.tif_whole_traces.mat</file>
+      <file>${PROJECT_ROOT}/LSTM code/SiMREPSdata/50 nM WT n8.tif_whole_traces.mat</file>
+    </fileset.resources>
+    <fileset.package />
+    <build-deliverables>
+      <file location="/Users/leyou/Desktop/FRET" name="beta2.0" optional="false">/Users/leyou/Desktop/FRET/beta2.0</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>/Applications/MATLAB_R2018a.app</root>
+      <toolboxes>
+        <toolbox name="matlabcoder" />
+      </toolboxes>
+      <toolbox>
+        <matlabcoder>
+          <enabled>true</enabled>
+        </matlabcoder>
+      </toolbox>
+    </matlab>
+    <platform>
+      <unix>true</unix>
+      <mac>true</mac>
+      <windows>false</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>false</linux>
+      <solaris>false</solaris>
+      <osver>10.13.6</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>maci64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>
