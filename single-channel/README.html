@@ -1,0 +1,28 @@
+<h1 id="automated-trace-selector-for-simreps-traces">Automated Trace Selector for SimREPS Traces</h1>
+<p>This project contains executable scripts that construct and train a LSTM neural network to classify traces data from T790 experiments. The executable scripts also visualize testing results from trained neural networks.</p>
+<h2 id="getting-started">Getting Started</h2>
+<p>These instructions will help you check prerequisites and setup execution environment for the script.</p>
+<h3 id="prerequisites">Prerequisites</h3>
+<p>The following prerequisites must be meet in order to run the script:</p>
+<pre><code>MATLAB &gt;= R2018a
+MATLAB Neural Network Toolbox &gt;= <span class="hljs-number">11.1</span>
+MATLAB Statistics and Machine Learning Toolbox &gt;= <span class="hljs-number">11.3</span>
+</code></pre><p>And <a href="https://www.mathworks.com/matlabcentral/fileexchange/66982-deep-learning-network-analyzer-for-neural-network-toolbox">Deep Learning Network Analyzer for Neural Network Toolbox</a>. <br>
+Run the following command in MATLAB to check versions for all installed products:</p>
+<pre><code><span class="hljs-built_in">ver</span>
+</code></pre><h3 id="installing-prerequisites">Installing Prerequisites</h3>
+<p>If you need to install prerequesites, download the newest release of MATLAB. Run the downloaded installer and select the toolboxes. You can also install toolboxes only if your MATLAB version meets the requirement. Simply run the installer of your current release of MATLAB and select the toolboxes needed.</p>
+<h3 id="setting-the-environment">Setting the Environment</h3>
+<p>In MATLAB, right click the <code>src/</code> folder and choose <code>add folder and all subfolders to path</code>. Also, open <code>settings.json</code> and the set <code>workingDir</code> to the folder one level above the <code>src/</code> folder. </p>
+<p>Optionally, you can change the value of <code>dataFolder</code>, which defines the path of the folder containing training and testing data. The value is already set for you.</p>
+<h3 id="before-start">Before Start</h3>
+<p>In MATLAB, run</p>
+<pre><code>test_setup_simreps
+</code></pre><p>You will get a confirmation message if everything is setup correctly.</p>
+<h2 id="running-the-script">Running the Script</h2>
+<p>Running the script is pretty straightforward. Simple run the following command in MATLAB:</p>
+<pre><code>main_simreps
+</code></pre><p>No action is further needed. The script will conduct training and testing of the LSTM neural network.</p>
+<h1 id="license">License</h1>
+<p>This project is licensed under the MIT License - see the LICENSE.md file for details</p>
+
