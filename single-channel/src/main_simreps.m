@@ -1,15 +1,21 @@
-%% README
+%% 
 % In this script, we will use simreps data to train a LSTM nerual net
 % that distinguish target signal from noise signal.
-% 
-% Leyou Zhang, Apr/25/2019
+%%
+
+if verLessThan('matlab','9.4')
+    error(strcat('The Script Requires MATLAB Version R2018a or Above. ',...
+        + ' You Are Running an Old MATLAB Version. Please Upgrade To Newest Release.'))
+end
+
 
 %% DATA LOADING
 
 disp("==================== DATA LOADING ====================")
 disp("")
 
-folder = 'SiMREPSdata/';
+settings = jsondecode(fileread('settings.json'));
+folder = fullfile(settings.workingDir, settings.dataFolder);
 
 filesMUT = {'RE12_50fM-1_whole_traces.mat';
     'RE12_50fM-2_whole_traces.mat';
@@ -26,7 +32,6 @@ filesWT = {
     'RE12_NDC-1_whole_traces';
     'RE12_NDC-2_whole_traces';
     'RE12_NDC-3_whole_traces';
-    
 };
 
 disp('LOADING THE FOLLOWING FILES AS MUTANT DATA:');
