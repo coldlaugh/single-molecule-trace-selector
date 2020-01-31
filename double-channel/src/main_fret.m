@@ -7,7 +7,7 @@ if verLessThan('matlab','9.6')
         + ' You Are Running an Old MATLAB Version.'))
 elseif verLessThan('matlab','9.4')
     error(strcat('The Script Requires MATLAB Version R2018a or Above. ',...
-        + ' You Are Running an Old MATLAB Version. Please Upgrade To R2019a or Above.'))
+        + ' You Are Running an Old MATLAB Version. Please Upgrade To Newest Release.'))
 end
 
 
