@@ -35,11 +35,11 @@ Note that if we want the model to accept traces more aggresively, and then human
 
 | Figure In Paper | Model Output | Manual Selection |
 | --------------- | ------------ | ---------------- |
-| Fig.4(b1) | | |
-| Fig.4(b2) | | |
-| Fig.4(b3) | | |
-| Fig.5(a1) | | |
-| Fig.5(c) | | |
+| Fig.4(b1) | ![model_output](finished_transfer_learning_test_fig4b1/rib_FRET_hist_rnn.png) | ![model_output](finished_transfer_learning_test_fig4b1/rib_FRET_hist_truth.png)|
+| Fig.4(b2) | ![model_output](finished_transfer_learning_test_fig4b2/rib_FRET_hist_rnn.png) | ![model_output](finished_transfer_learning_test_fig4b2/rib_FRET_hist_truth.png)|
+| Fig.4(b3) | ![model_output](finished_transfer_learning_test_fig4b3/rib_FRET_hist_rnn.png) | ![model_output](finished_transfer_learning_test_fig4b3/rib_FRET_hist_truth.png)|
+| Fig.5(a1) | ![model_output](finished_transfer_learning_fig5a1_0.3/rib_FRET_hist_rnn.png) | ![model_output](finished_transfer_learning_fig5a1_0.3/rib_FRET_hist_truth.png)|
+| Fig.5(c) | ![model_output](finished_transfer_learning_test_fig5c/rib_FRET_hist_rnn.png) | ![model_output](finished_transfer_learning_test_fig5c/rib_FRET_hist_truth.png)|
 
 ## Conclusion
 
