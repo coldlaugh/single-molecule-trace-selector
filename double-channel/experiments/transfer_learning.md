@@ -13,7 +13,7 @@ We use transfer learning to demonstrate the capacity of our trained model to gen
 
 ## Transfer Learning How-to
 
-How is transfer learning realized? Firstly, we import base models that have been trained on a large dataset. We then decrease the learning rate dramatically such that all layers except the last fully connected layer are locked to their current parameters during the transfer training. Consider the layers before the last fully connected layers as an encoder that extracts time traces' characterics such as anti-correlation, photo-bleach, etc. Consider the last fully connected layer as the trace selection criteria you would set for each characterics. Since the difference between different systems are mainly criteria, we just need our base model to re-learn the last fully connected layer. Therefore transfer learning requires a much smaller training dataset.
+How is transfer learning realized? Firstly, we import base models that have been trained on a large dataset. We then decrease the learning rate dramatically for all layers except the last fully connected layer such that they are locked to their current parameters during the transfer training. Consider the layers before the last fully connected layers as an encoder that extracts time traces' characterics such as anti-correlation, photo-bleach, etc. Consider the last fully connected layer as the trace selection criteria you would set for each characterics. Since the difference between different systems are mainly criteria, we just need our base model to re-learn the last fully connected layer. Therefore transfer learning requires a much smaller training dataset.
 
 ## Evaluation Results
 
