@@ -43,7 +43,7 @@ Note that if we want the model to accept traces more aggresively, and then human
 
 ## Conclusion
 
-
+I've demonstrated that with the power of transfer learning we can apply our deep learning method to new dataset with as few as 69 accepted traces.
 
 
 
