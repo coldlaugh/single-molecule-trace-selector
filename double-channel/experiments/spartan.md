@@ -45,16 +45,20 @@ I have applied the above threshold searching to a dataset from fig5a, and use th
 
 ### Concordances
 
-### Concordances
-
 | Figure In Paper | True Positive | False Negative | False Positive | True Negative |  Concordance | 
 | --------------- | ------------- | --------------| -------------- | -------------- | ----------  |
-| Fig.4(b1) |  56 | 31 | 117 | 1122 | -- |
-| Fig.4(b2) | 128 | 82 | 120 | 1230 |  -- |
-| Fig.4(b3) | 117 | 36  | 149 | 679 |  -- |
+| Fig.4(b1) |  56 | 31 | 117 | 1122 | 88.9% |
+| Fig.4(b2) | 128 | 82 | 120 | 1230 |  87.1% |
+| Fig.4(b3) | 117 | 36  | 149 | 679 |  81.1% |
 | Fig.5(a1) (Training) | 53 | 13 | 33 | 381 |  90.4% |
-| Fig.5(a1) (Evaluation) | 102 | 55 | 149 | 1124 | -- |
-| Fig.5(c) | 82 | 43 | 177 | 1547 | -- |
+| Fig.5(a1) (Evaluation) | 102 | 55 | 149 | 1124 | 85.7% |
+| Fig.5(c) | 82 | 43 | 177 | 1547 | 88.1% |
+
+## Conclusion
+
+We have demonstrated a method to use manual selection labels to better serach SPARTAN thresholds. Compared to LSTM models, the concordance between SPARTAN and manual selection is lower than LSTM models, mainly due to high false positive rates. Also, SPARTAN has no automatic segmentation algorithms.
+
+This will give us a good estimate of time efficiency between our LSTM models and SPARTAN's thresholding method.
 
 
 
