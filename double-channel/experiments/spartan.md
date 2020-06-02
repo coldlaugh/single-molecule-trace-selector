@@ -35,8 +35,8 @@ I have applied the above threshold searching to a dataset from fig5a, and use th
 |SNR-signal | >2.00 |
 |SNR-bg/SNR-signal |  >1.50 |
 |Mean acceptor intensity |  >60.00 |
-|Mean donor intensity |  30.00 |
-|min_acclife |  25.00 |
+|Mean donor intensity |  >30.00 |
+|FRET Lifetime |  >25.00 |
 | D/A correlation |  >-1.00 |
 | D/A correlation | <0.20 |
 | Signal-to-noise |  >7.00 |
