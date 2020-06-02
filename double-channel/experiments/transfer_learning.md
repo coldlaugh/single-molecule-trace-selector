@@ -8,12 +8,12 @@ We use transfer learning to demonstrate the capacity of our trained model to gen
 | Fig.4(b1) | b_1_No M2+_100 uM EDTA | Only used in evaluation | 87  | 1239 |
 | Fig.4(b2) | b_2_500 uM Mg2+ | Only used in evaluation| 210 | 1350 |
 | Fig.4(b3) | b_3_1 mM Mg2+ | Only used in evaluation| 153 | 828 |
-| Fig.5(a1) | a_1 mM Mg2+_100uM Mn2+ | 30% used in transfer training, the rest used in evaluation | 69(train),154(test) | 490(train),1197(test)|
+| Fig.5(a1) | a_1 mM Mg2+_100uM Mn2+ | 30% used in transfer training, the rest used in evaluation | 69(train),154(evaluation) | 490(train),1197(evaluation)|
 | Fig.5(c)  | c_100 uM Mn2+ only | Only used in evaluation|125 | 1724 |
 
 ## Transfer Learning How-to
 
-How is transfer learning realized? Firstly, we import base models that have been trained on a large dataset. We then decrease the learning rate dramatically such that all layers except the last fully connected layer are locked to their current parameters during the transfer training. Consider the layers before the last fully connected layers as an encoder that extracts time traces' characterics such as anti-correlation, photo-bleach, etc. Consider the last fully connected layer as the trace selection criteria you would set for each characterics. Since the difference between different systems are mainly criteria, we just need our base model to re-learn the last fully connected layer. Therefore transfer learning requires a much smaller training dataset.
+How is transfer learning realized? Firstly, we import base models that have been trained on a large dataset. We then decrease the learning rate dramatically for all layers except the last fully connected layer such that they are locked to their current parameters during the transfer training. Consider the layers before the last fully connected layers as an encoder that extracts time traces' characterics such as anti-correlation, photo-bleach, etc. Consider the last fully connected layer as the trace and segment selection criteria you would set for each characterics. Since the difference between different systems are mainly criteria, we just need our base model to re-learn the last fully connected layer. Therefore transfer learning requires a much smaller training dataset.
 
 ## Evaluation Results
 
