@@ -43,4 +43,18 @@ I have applied the above threshold searching to a dataset from fig5a, and use th
 | Background Noise | <250.00 |
 |# Cy3 blinks |  <40.00 |
 
+### Concordances
+
+### Concordances
+
+| Figure In Paper | True Positive | False Negative | False Positive | True Negative |  Concordance | 
+| --------------- | ------------- | --------------| -------------- | -------------- | ----------  |
+| Fig.4(b1) |  56 | 31 | 117 | 1122 | -- |
+| Fig.4(b2) | 128 | 82 | 120 | 1230 |  -- |
+| Fig.4(b3) | 117 | 36  | 149 | 679 |  -- |
+| Fig.5(a1) (Training) | 53 | 13 | 33 | 381 |  90.4% |
+| Fig.5(a1) (Evaluation) | 102 | 55 | 149 | 1124 | -- |
+| Fig.5(c) | 82 | 43 | 177 | 1547 | -- |
+
+
 
